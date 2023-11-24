@@ -1,0 +1,14 @@
+.onboarding-slide-enter {
+  transform: translateX(-100%);
+  animation: slideIn 0.5s ease-in-out forwards;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
