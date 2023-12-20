@@ -13,3 +13,22 @@ body{
   height: 100vh;
   overflow: scroll;
 }
+
+.customp{
+  border: none
+}
+.custom{
+  border: 2px solid blue;
+  width: 15rem;
+
+}
+
+.customp::before {
+  content: 'Continue with Microsoft';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 16px;  /* Adjust the font size as needed */
+  color: #ffffff;   /* Set the text color */
+}

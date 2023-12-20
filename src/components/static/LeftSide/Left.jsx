@@ -11,6 +11,7 @@ import TrashIcon from '../../../assets/trash.svg'
 import UpArrowIcon from '../../../assets/uparrow.svg'
 import SettingIcon from '../../../assets/setting.svg'
 import ProfileImage from '../../../assets/profile.png'
+import Logo from '../../../assets/logo1.png'
 
 import './style.css'
 import { BiSolidDownArrow, BiSolidUpArrow } from 'react-icons/bi'
@@ -34,7 +35,8 @@ const Left = ({setshowSideBar,showSidebar}) => {
         </div>
         {/* BRAND NAME  */}
         <div className='mb-3'>
-          <h1 className='text-lg font-semibold tracking-wider'>Power Ai Tool</h1>
+          {/* <h1 className='text-lg font-semibold tracking-wider'>Power Ai Tool</h1> */}
+          <img src={Logo} alt="" className='h-[1.6rem]' />
         </div>
 
         {/* MAIN NAV LINKS  */}

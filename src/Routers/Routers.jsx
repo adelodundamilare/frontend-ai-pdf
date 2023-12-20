@@ -32,10 +32,15 @@ import SignPdfScreen from '../screens/PdfScreen/UploadScreen/SignPdfScreen'
 
 import EditPdfScreen from '../screens/PdfScreen/UploadScreen/EditPdfScreen'
 import EditPdfContentScreen from '../screens/PdfScreen/MainContent/EditPdfContentScreen'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import LoginAndRegistrationPopup from '../components/dynamic/Popup/LoginAndRegistrationPopup'
 
 
 const Routers = () => {
   return (
+    <>
+    <ToastContainer />
     <Routes>
       <Route path='/' element={<OnBoardingScreen />} />
       <Route path='/dashboard' element={<DashboardScreen />} />
@@ -73,13 +78,15 @@ const Routers = () => {
 
       <Route path='/pdf/unlock' element={<UnlockPdfScreen/>}/>
       <Route path='/pdf/unlock/content' element={<UnlockPdfContentScreen/>}/>
-
       <Route path='/pdf/to/other' element={<PdfToOtherScreen/>}/>
       <Route path='/pdf/to/other/content' element={<PdfToOtherContentScreen/>}/>
 
       <Route path='/pdf/other/to/pdf' element={<OtherToPdfScreen/>}/>
       <Route path='/pdf/other/to/pdf/content' element={<OthersToPdfContentScreen/>}/>
+      <Route path='/login-route' element={<LoginAndRegistrationPopup/>}/>
+
     </Routes>
+    </>
   )
 }
 
