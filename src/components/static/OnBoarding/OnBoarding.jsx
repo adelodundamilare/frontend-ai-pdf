@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import ArrowImage from '../../../assets/arrow.svg'
 import { useNavigate } from 'react-router-dom'
 import { onBoardingData } from '../../../constants/onBoardingData'
+import Logo from '../../../assets/logo.png'
 import './style.css'
 const OnBoarding = () => {
   const nav = useNavigate()
@@ -52,7 +53,7 @@ const OnBoarding = () => {
           <div className='block md:hidden mt-4 w-[100%]'>
             <h1 className='text-2xl mb-10 font-semibold text-center'>AI Hub Tool</h1>
             <div className='flex justify-center items-center'>
-              <button onClick={() => nav("/dashboard")} style={{ border: "2px solid #20808D " }} className='w-[18rem] h-[2.8rem] font-bold tracking-wide bg-transparent rounded-md text-[#20808D] flex justify-center items-center gap-3'>Try Now For Free
+              <button onClick={() => nav("/login-route")} style={{ border: "2px solid #20808D " }} className='w-[18rem] h-[2.8rem] font-bold tracking-wide bg-transparent rounded-md text-[#20808D] flex justify-center items-center gap-3'>Try Now For Free
                 <img src={ArrowImage} alt="arrow-image" loading='true' />
               </button>
             </div>
@@ -63,8 +64,8 @@ const OnBoarding = () => {
         {/* RIGHT SIDE  */}
 
         <div className='flex-1  hidden w-[100%] h-[100%] md:flex justify-center items-center flex-col'>
-          <h1 className='text-2xl mb-10 font-semibold'>AI Hub Tool</h1>
-          <button onClick={() => nav("/dashboard")} style={{ border: "2px solid #20808D " }} className='w-[18rem] hover:bg-[#20808D] hover:text-white h-[2.8rem] font-bold tracking-wide bg-transparent rounded-md text-[#20808D] flex justify-center items-center gap-3'>Try Now For Free
+          <img src={Logo} className='h-[2rem] mb-3'/>
+          <button onClick={() => nav("/login-route")} style={{ border: "2px solid #20808D " }} className='w-[18rem] hover:bg-[#20808D] hover:text-white h-[2.8rem] font-bold tracking-wide bg-transparent rounded-md text-[#20808D] flex justify-center items-center gap-3'>Try Now For Free
             <img src={ArrowImage} alt="arrow-image" loading='true' />
           </button>
         </div>

@@ -47,7 +47,9 @@ const Chat = () => {
         <div className='flex justify-center items-center'>
 
           <div className='bg-[#D9D9D9] p-2 sm:w-[18rem] w-[14rem] rounded-md'>
-            <button onClick={() => setshowPopUp(!showPopUp)} className='sm:w-[8rem] w-[6rem] h-[2.5rem] bg-white rounded-md mr-4'>Default</button>
+            {/* <button onClick={() => setshowPopUp(!showPopUp)} className='sm:w-[8rem] w-[6rem] h-[2.5rem] bg-white rounded-md mr-4'>Default</button> */}
+            <button  className='sm:w-[8rem] w-[6rem] h-[2.5rem] bg-white rounded-md mr-4'>Default</button>
+
             <button onClick={()=>setshowSubscriptionPopup(true)} className='sm:w-[8rem] w-[6rem] h-[2.5rem] bg-white rounded-md'>Summarizer</button>
           </div>
 
