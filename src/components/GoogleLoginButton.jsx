@@ -3,21 +3,24 @@ import React from 'react';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import GoogleIcon from '../assets/google.svg';
+import { BASE_URL } from '../config/baseUrl';
+import { useNavigate } from 'react-router-dom'
+
 
 
 const GoogleLoginButton = ({ onSuccess, onError }) => {
+  const navigate = useNavigate(); 
   const googleLogin = useGoogleLogin({
     flow: 'auth-code',
     onSuccess: async (codeResponse) => {
       try {
         console.log('Authorization Code:', codeResponse.code);
-
         // Make a POST request to your backend to exchange the authorization code for access tokens
-        const tokensResponse = await axios.post('http://127.0.0.1:8000/accounts/dj-rest-auth/google/login/', {
+        const tokensResponse = await axios.post(`${BASE_URL}/accounts/dj-rest-auth/google/login/`, {
           code: codeResponse.code,
         });
 
-        const token = tokensResponse.data;
+        const token = tokensResponse.data.key;
         console.log('Access Tokens:', token);
         localStorage.setItem('token', token);
 
@@ -27,6 +30,7 @@ const GoogleLoginButton = ({ onSuccess, onError }) => {
         }
       } catch (error) {
         console.error('Error exchanging code for tokens:', error);
+        navigate('/dashboard');
         if (onError) {
           onError(error);
         }

@@ -1,6 +1,6 @@
 // LEFT NAV LINKS 
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import SearchIcon from '../../../assets/search.svg'
 import PdfIcon from '../../../assets/pdf.svg'
 import LibraryIcon from '../../../assets/library.svg'
@@ -17,13 +17,59 @@ import './style.css'
 import { BiSolidDownArrow, BiSolidUpArrow } from 'react-icons/bi'
 import { GiHamburgerMenu } from 'react-icons/gi'
 import { useNavigate } from 'react-router-dom'
+import { BASE_URL } from '../../../config/baseUrl'
+import axios from 'axios'
+// import SubscriptionPopup from './../../dynamic/Popup/SubscriptionPopup'
 
 const Left = ({setshowSideBar,showSidebar}) => {
+
+  const [userProfile, setUserProfile] = useState([]);
+  const [username, setUsername] = useState('');
+  console.log(username, 'username')
+  // const [showSubscriptionPopup, setshowSubscriptionPopup] = useState(false)
+
 
   const [showLibrary, setshowLibrary] = useState(false)
   const [showHistory, setshowHistory] = useState(false)
   const arr = [2, 2, 2, 2, 22, 2, 2, 2, 2, 2,]
   const nav = useNavigate()
+
+
+  
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    const get_user_profile =async ()=>{
+
+      const profileResponse = await axios.get(`${BASE_URL}/accounts/profile/`, {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        });
+  
+        const userProfile1 = profileResponse.data;    
+        const username = userProfile1[0].email
+        setUsername(username)
+
+      }
+
+        
+
+      get_user_profile()
+
+
+  }, []);
+
+
+  const handleUpgradePlan = () => {
+    // Redirect to the subscription page
+    nav('/subscription');
+  };
+
+  
+
+
   return (
 
     <div className='w-[16rem] h-screen relative overflow-y-auto bg-[#36454F] text-white font-roboto p-4'>
@@ -156,14 +202,28 @@ const Left = ({setshowSideBar,showSidebar}) => {
 
             <div className='flex items-center gap-2 mt-2'>
               <img src={UpArrowIcon} alt="" className='w-[1rem] h-[1rem]' />
-              <p className='text-sm'>Upgrade Plan</p>
+              <button className='text-sm' onClick={handleUpgradePlan}>Upgrade Plan</button>
             </div>
+
+            {/* {
+              showSubscriptionPopup && (
+                <div className=' absolute top-0 left-0 w-[100%] h-[100%] bg-black bg-opacity-50'>
+                  <div className=' w-[100%] h-[100%] flex justify-center items-center opacity-100'>
+                    <div className=' mt-auto mb-auto flex justify-center items-center opacity-100'>
+                      <SubscriptionPopup setshowSubscriptionPopup={setshowSubscriptionPopup} />
+                    </div>
+                  </div>
+                </div>
+              )
+            } */}
+
+
 
             <div className='flex justify-between items-center gap-2 mt-3 cursor-pointer'onClick={()=>nav("/profile")}>
 
               <div className='flex items-center gap-2'>
                 <img src={ProfileImage} alt="" className='' onClick={()=>nav("/profile")} />
-                <p className='text-sm ellipsis-text2 w-[6rem]'>angelahenry054555555</p>
+                <p className='text-sm ellipsis-text2 w-[6rem]'>{username ? username.split('@')[0]:'Guest'}</p>
               </div>
 
               <div>

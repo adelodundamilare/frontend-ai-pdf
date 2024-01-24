@@ -16,7 +16,14 @@ export const msalConfig = {
         clientId: "13e3469a-1267-4595-a117-574e27ec37b7",
         // authority: 'https://login.microsoftonline.com/common',
         authority: "https://login.microsoftonline.com/common",
-        redirectUri: "http://localhost:5173/"
+        // redirectUri: "http://localhost:5173/"
+        // redirectUri: "https://ai-lawyer.neuracase.com"
+        // redirectUri: "https://a5d1-119-155-11-224.ngrok-free.app/login-route"
+        redirectUri:"https://ai-lawyer.neuracase.com/login-route"
+
+
+
+       
     },
     cache: {
         cacheLocation: "sessionStorage", // This configures where your cache will be stored

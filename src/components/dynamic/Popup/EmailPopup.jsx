@@ -4,46 +4,47 @@ import CrossIcon from '../../../assets/cross.svg';
 import { BASE_URL } from '../../../config/baseUrl';
 import { toast } from 'react-toastify';
 import ForgotPopup from './ForgotPopup';
+import { useNavigate } from 'react-router-dom'
 
 
 
 const EmailPopup = ({ isForgotPopup, isLogin, setisLogin, setisForgotPopup }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const navigateTo = useNavigate();
 
-
-  const handleContinue = async () => {  
+  const handleContinue = async () => {
     try {
       const endpoint = isLogin ? 'accounts/login/' : 'accounts/register/';
-
-      // const endpoint = 'accounts/login/'
       const response = await axios.post(`${BASE_URL}/${endpoint}`, {
         email,
         password,
       });
-      console.log("");
+
       const token = response.data.token;
       localStorage.setItem('token', token);
-      if(!isLogin){
-        console.log("working111111");
-        setisLogin(true)
-      }else{
-        console.log("working22222");
 
-        // setisEmailPopup(false)
+      if (!isLogin) {
+        setisLogin(true);
+      } else {
+        console.log('Working 22222');
       }
-      console.log(">>>>>>",response);
+
       toast.success(response.data.message, {
         position: toast.POSITION.TOP_RIGHT,
-        
       });
-      window.location.href = '/dashboard';
+
+      isLogin && navigateTo('/dashboard');
     } catch (error) {
-      console.error(isLogin?'something is wrong email or password':"Email Already exist", error.message);
-      toast.error(isLogin?'something is wrong email or password':"Email Already exist", {
+      const errorMessage = isLogin
+        ? 'Something is wrong with email or password'
+        : 'Email already exists';
+
+      console.error(errorMessage, error.message);
+
+      toast.error(errorMessage, {
         position: toast.POSITION.TOP_RIGHT,
       });
     }
