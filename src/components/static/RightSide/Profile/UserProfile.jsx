@@ -12,19 +12,18 @@ import { useNavigate } from 'react-router-dom'
 
 const UserProfile = () => {
   const [showSideBar, setshowSideBar] = useState(false)
-  const [userProfile, setUserProfile] = useState(null);
-
-  console.log(userProfile, 'userProfile')
+  const [userProfile, setUserProfile] = useState([]);
 
   const navigateTo = useNavigate();
+  
 
   
 
 
   const handleLogout = () => {
-    // Clear any user-related information or tokens from local storage, state, etc.
-    // For example, you might use localStorage.removeItem('token');
+
     localStorage.removeItem('token')
+    localStorage.removeItem('username')
     // Redirect to the login page
     navigateTo('/');  // Replace with the actual path to your login page
   };
@@ -48,6 +47,7 @@ const UserProfile = () => {
       } catch (error) {
         // Handle error, such as redirecting to the login page if the token is invalid
         console.error('Error fetching user profile:', error);
+
       }
     };
 
@@ -140,7 +140,8 @@ const UserProfile = () => {
                   </div>
 
                   <div className='flex gap-2 items-center'>
-                    <p>{profile.name}</p>
+                   
+                    <p>{userProfile[0]?.name || userProfile[0]?.email.split('@')[0]}</p>
                   
                     <img src={EditIcon} alt="" className=' cursor-pointer' />
                   </div>
@@ -235,8 +236,8 @@ const UserProfile = () => {
 
       {/* RESPONSIVE SIDE BAR COMPONENT  */}
       {
-        showSideBar && (
-          <div className='lg:hidden block absolute top-0 left-0'><Left showSideBar={showSideBar} setshowSideBar={setshowSideBar} /></div>
+         showSideBar && (
+          <div className='lg:hidden block absolute top-0 left-0'><Left showSideBar={showSideBar} setshowSideBar={setshowSideBar}  /></div>
         )
       }
     </div>

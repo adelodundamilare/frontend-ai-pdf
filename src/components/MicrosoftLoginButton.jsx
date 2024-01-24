@@ -14,7 +14,9 @@ const MicrosoftLoginButton = () => {
 // chatgpt:0ffbd016-485a-463c-a606-537c0852954f
 // DjangoAppSSO:7ef6bc24-cbd7-4e47-b874-e9c417da13d6
 // client_secret:-Y48Q~Z.xujVkRw8GqEuxy-p5b5kENybY~mJDcj2
-  const url = 'http://localhost:5173';
+  // const url = 'http://localhost:5173';
+  const url = 'https://ai-lawyer.neuracase.com';
+  
 
 
   
@@ -29,20 +31,20 @@ const MicrosoftLoginButton = () => {
     // navigate('/dashboard');
 
     // // Some actions
-    // if (!err && response) {
-    //   const authorizationCode = response.accessToken;
-    //   const tokensResponse = await axios.post('http://127.0.0.1:8000/accounts/dj-rest-auth/microsoft/login/', {
-    //     access_token: response.accessToken,
-    //     id_token: response.idToken,
-    //   });
+    if (!err && response) {
+      const authorizationCode = response.accessToken;
+      const tokensResponse = await axios.post('http://127.0.0.1:8000/accounts/dj-rest-auth/microsoft/login/', {
+        access_token: response.accessToken,
+        id_token: response.idToken,
+      });
 
-    // //   const tokens = tokensResponse.data;
-    //   const token = tokensResponse.data;
-    //   console.log('Access Tokens:', token);
-    //   localStorage.setItem('token', token);
-    //   onMsalInstanceChange(msal);
-    //   navigate('/dashboard');
-    // }
+    //   const tokens = tokensResponse.data;
+      const token = tokensResponse.data.key;
+      console.log('Access Tokens:', token);
+      localStorage.setItem('token', token);
+      onMsalInstanceChange(msal);
+      navigate('/dashboard');
+    }
   };
 
 

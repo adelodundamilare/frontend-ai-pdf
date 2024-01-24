@@ -35,6 +35,8 @@ import EditPdfContentScreen from '../screens/PdfScreen/MainContent/EditPdfConten
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LoginAndRegistrationPopup from '../components/dynamic/Popup/LoginAndRegistrationPopup'
+import SubscriptionPopup from '../components/dynamic/Popup/SubscriptionPopup'
+import PaymentPage from '../components/dynamic/Popup/Paymentpage'
 
 
 const Routers = () => {
@@ -84,6 +86,9 @@ const Routers = () => {
       <Route path='/pdf/other/to/pdf' element={<OtherToPdfScreen/>}/>
       <Route path='/pdf/other/to/pdf/content' element={<OthersToPdfContentScreen/>}/>
       <Route path='/login-route' element={<LoginAndRegistrationPopup/>}/>
+      <Route path='/subscription' element={<SubscriptionPopup/>}/>
+      <Route path='/select/payment' element={<PaymentPage/>}/>
+
 
     </Routes>
     </>
