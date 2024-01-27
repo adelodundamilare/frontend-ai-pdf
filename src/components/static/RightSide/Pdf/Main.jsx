@@ -61,6 +61,90 @@ const Main = ({ title, description, link }) => {
     const selectedFiles = event.target.files;
     toast.success("Clicked sPLIT PDF");
   };
+  const handleCompressChange = async (event) => {
+    const selectedFiles = event.target.files;
+    console.log(selectedFiles, "jkkj");
+    const formData = new FormData();
+    formData.append("input_pdf", selectedFiles[0]);
+    formData.append("compression_quality", "recommended");
+    // formData.append("pdf_files", selectedFiles[1]);
+
+    try {
+      const response = await authRequest.post("/pdf/compress_pdf/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log(response, "lklkl");
+      // const mergedFileUrl = response.data.split_pdf.merged_file;
+
+      // const link = document.createElement("a");
+      // link.href = mergedFileUrl;
+      // link.setAttribute("download", extractFilenameFromUrl(mergedFileUrl));
+      // document.body.appendChild(link);
+      // link.click();
+
+      // document.body.removeChild(link);
+    } catch (error) {
+      toast.error(error);
+      console.error("Error merging files:", error);
+    }
+  };
+
+  const handleEditChange = async (event) => {};
+  const handleSignChange = async (event) => {};
+  const handleStampChange = async (event) => {};
+
+  const handlePdftoOtherChange = async (event) => {
+    const selectedFiles = event.target.files;
+    const formData = new FormData();
+    formData.append("input_pdf", selectedFiles[0]);
+
+    try {
+      const response = await authRequest.post("/pdf/pdf_to_image/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      const mergedFileUrl = response.data.split_pdf.protected_file;
+
+      const link = document.createElement("a");
+      link.href = mergedFileUrl;
+      link.setAttribute("download", extractFilenameFromUrl(mergedFileUrl));
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+    } catch {}
+  };
+  const handleOthertoPdfChange = async (event) => {};
+  const handleOcrChange = async (event) => {};
+  const handleOrganizeChange = async (event) => {};
+  const handleUnlockChange = async (event) => {};
+
+  const handleProtectChange = async (event) => {
+    const selectedFiles = event.target.files;
+    const formData = new FormData();
+    formData.append("input_pdf", selectedFiles[0]);
+    formData.append("pdf_password", "1234");
+
+    try {
+      const response = await authRequest.post("/pdf/protect_pdf/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      const mergedFileUrl = response.data.split_pdf.protected_file;
+
+      const link = document.createElement("a");
+      link.href = mergedFileUrl;
+      link.setAttribute("download", extractFilenameFromUrl(mergedFileUrl));
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+    } catch {}
+  };
 
   return (
     <>
@@ -124,12 +208,34 @@ const Main = ({ title, description, link }) => {
                 id="fileInput"
                 type="file"
                 className="hidden"
-                multiple
+                multiple={locat.pathname === "/pdf/merge" ? true : false}
                 onChange={
                   locat.pathname === "/pdf/merge"
                     ? handleMergeChange
                     : locat.pathname === "/pdf/split"
                     ? handleSplitChange
+                    : locat.pathname === "/pdf/tool"
+                    ? handleToolChange
+                    : locat.pathname === "/pdf/compress"
+                    ? handleCompressChange
+                    : locat.pathname === "/pdf/edit"
+                    ? handleEditChange
+                    : locat.pathname === "/pdf/sign"
+                    ? handleSignChange
+                    : locat.pathname === "/pdf/stamp"
+                    ? handleStampChange
+                    : locat.pathname === "/pdf/to/other"
+                    ? handlePdftoOtherChange
+                    : locat.pathname === "/pdf/other/to/pdf"
+                    ? handleOthertoPdfChange
+                    : locat.pathname === "/pdf/OCR"
+                    ? handleOcrChange
+                    : locat.pathname === "/organize/pdf"
+                    ? handleOrganizeChange
+                    : locat.pathname === "/pdf/unlock"
+                    ? handleUnlockChange
+                    : locat.pathname === "/pdf/protect"
+                    ? handleProtectChange
                     : null
                 }
               />
