@@ -47,7 +47,8 @@ body{
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+
+  /* height: 40vh; */
 }
 
 .payment-buttons {
@@ -55,6 +56,7 @@ body{
   flex-direction: column;
   gap: 20px;
   align-items: center;
+  /* margin-top: 5px; */
 }
 
 .payment-button {
@@ -118,6 +120,11 @@ body{
 .credit-card {
   background-color: #47a247;
   color: #fff;
+  width: 28%;
+  height: 35px;
+  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
 }
 
 .credit-card:hover {
@@ -137,4 +144,72 @@ body{
   background-color: white !important;
   color: black !important;
   border-color: #FFF;
+}
+
+
+/* #payment Screen css */
+
+/* App.css */
+.payment-details-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  /* background-color: #f2f2f2;  */
+  /* border-bottom: 2px solid #ccc;  */
+  justify-content: center;
+  margin: 50px;
+  padding: 30px 20px;
+}
+
+.payment-details {
+  text-align: left;
+}
+
+.payment-details h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.payment-details p {
+  margin: 5px 0;
+}
+
+.payment-details .duration {
+  font-weight: bold;
+}
+
+.payment-details .price {
+  font-weight: bold;
+  color: #007bff; /* Adjust color as needed */
+}
+
+.New-design {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 40px; /* Adjust the gap according to your design preferences */
+}
+
+.line {
+  display: flex;
+  justify-content: space-between;
+  gap: 20rem;
+}
+.test{
+  height: 100vh;
+  /* margin-top: 100px; */
+  background-color: #f2f2f2; 
+  border-bottom: 2px solid #ccc; 
+}
+.test h1{
+  font-size: 30px;
+  margin-top: 25px;
+}
+
+.payment-buttons-container {
+  display: flex;
+  justify-content: space-between;  /* or 'space-around' depending on your preference */
+  margin: 20px;  /* Adjust margin as needed */
+  gap: 1rem;
 }

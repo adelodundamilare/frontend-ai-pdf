@@ -11,7 +11,8 @@ import Message from './Message';
 
 import GooglePayButton from '@google-pay/button-react';
 import ApplePay from './ApplePay';
-import {Elements} from '@stripe/react-stripe-js';
+
+import PaymentInfo from './PaymentInfo';
 
 
 const PaymentPage = (props) => {
@@ -83,27 +84,43 @@ const PaymentPage = (props) => {
 
 
 
+
+
   
     return (
      
-      <div className="payment-container">
-           <div>
-           <h1>Payment</h1>
-      {/* <p>Plan ID: {planId}</p> */}
-      <p >Duration: {duration}</p>
-      <p>Price: ${convertCentsToDollars(price)}</p>
-      
-    </div>
-        <h1>Select Payment Method</h1>
-        <br></br>
-       
+    <div className='test'>
+      <h1 className='text-center'>Select  Payment Method</h1>
+       <PaymentInfo duration={duration} price={price} />
+    <div>
 
+      
+   
+    </div>
+    
+    <div className="payment-container">
+
+    <p>Pay with</p> 
+
+
+        {/* <Elements stripe={stripePromise}> */}
+        <ApplePay  />
+        {/* </Elements> */}
+        <br>
+        </br>
+
+        <br>
+        </br>
+        <div className="payment-buttons-container">
+         
+      
 
         <PayPalScriptProvider options={initialOptions}>
         <PayPalButtons
           style={{
             shape: "rect",
             layout: "vertical",
+           
           }}
           createOrder={(data, actions) => {
             return actions.order.create({
@@ -233,21 +250,17 @@ const PaymentPage = (props) => {
 
 
 
-        {/* <Elements stripe={stripePromise}> */}
-           <ApplePay  />
-        {/* </Elements> */}
+      
           
           {/* <button className="payment-button google-pay" onClick={handleApplePayClick}>
             <span className="button-text">Pay with Apple Pay</span>
             <span className="icon google-icon"></span>
           </button> */}
-          <button className="payment-button credit-card" onClick={() => handleCheckout(planId)} >
-            <span className="button-text">Pay with Credit Card</span>
-            <span className="icon credit-card-icon"></span>
-          </button>
+         
 
           {/* google pay */}
           <GooglePayButton
+        
         environment="TEST"
         paymentRequest={{
           apiVersion: 2,
@@ -299,6 +312,17 @@ const PaymentPage = (props) => {
         buttonColor='black'
         buttonType='Buy'
       />
+
+</div>
+
+      
+        
+
+</div>
+<button className="payment-button credit-card" onClick={() => handleCheckout(planId)} >
+                  <span className="button-text">Pay with Credit Card</span>
+                  <span className="icon credit-card-icon"></span>
+        </button>
 
 
         </div>
