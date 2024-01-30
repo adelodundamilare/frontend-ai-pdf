@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Left from "../../../LeftSide/Left";
 import BackIcon from "../../../../../assets/back.svg";
@@ -14,24 +14,56 @@ import { authRequest } from "../../../../../config/baseUrl";
 import ProgressModal from "../../../../Progress";
 import { extractFilenameFromUrl } from "../../../../../constants/helpers";
 import { Document, Page } from "react-pdf";
+import { Text } from '@react-pdf/renderer';
 import { toast } from "react-toastify";
+import SplitPdfMessage from "./DownloadPDF/SplitPdfMessage";
 
 const SplitPdfContent = () => {
   const [showSideBar, setshowSideBar] = useState(false);
   const [showLeftSideBar, setshowLeftSideBar] = useState(false);
   const nav = useNavigate();
   const location = useLocation();
+  const [progress, setProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isButtonClicked, setIsButtonClicked] = useState(false);
+  const [splitedFileUrl, setSplitedFileUrl] = useState(null);
 
-  const [fromPage, setFromPage] = useState("");
+  const [totalPages, setTotalPages] = useState(0); 
+  const [numPage, setNumPages] = useState(0); 
+
+
+  
+  const [fromPage, setFromPage] = useState("1");
   const [toPage, setToPage] = useState("");
 
+  console.log(fromPage, 'fromPage')
+
+
+
   const handleFromPageChange = (event) => {
-    setFromPage(event.target.value);
+    
+
+    const newValue = event.target.value;
+
+    // Check if the entered value is within the valid range
+    if (newValue === '' || (newValue >= 1 && newValue <= numPage)) {
+      setFromPage(newValue);
+    } else {
+      toast('Out of range. Please enter a valid page number.');
+
+    }
   };
 
   const handleToPageChange = (event) => {
-    setToPage(event.target.value);
+    const newValue = event.target.value;
+
+    // Check if the entered value is within the valid range
+    if (newValue === '' || (newValue >= 1 && newValue <= numPage)) {
+      setToPage(newValue);
+    } else {
+      toast('Out of range. Please enter a valid page number.');
+
+    }
   };
 
   const splitHandler = async () => {
@@ -54,14 +86,20 @@ const SplitPdfContent = () => {
           setProgress(calculatedProgress);
         },
       });
-      const mergedFileUrl = response.data.split_pdf.merged_file;
-      const link = document.createElement("a");
-      link.href = mergedFileUrl;
-      link.setAttribute("download", extractFilenameFromUrl(mergedFileUrl));
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+
+      console.log(response, 'response')
+      const newSplitedFileUrl = response.data.split_pdf.split_pdf;
+      console.log(newSplitedFileUrl, 'newSplitedFileUrl')
+
+      setSplitedFileUrl(newSplitedFileUrl); 
+      // const link = document.createElement("a");
+      // link.href = mergedFileUrl;
+      // link.setAttribute("download", extractFilenameFromUrl(mergedFileUrl));
+      // document.body.appendChild(link);
+      // link.click();
+      // document.body.removeChild(link);
       setIsLoading(false);
+      setIsButtonClicked(true);
     } catch (error) {
       setIsLoading(false);
       toast.error(error);
@@ -69,9 +107,34 @@ const SplitPdfContent = () => {
     }
   };
 
+  const onLoadSuccess = ({ numPages }) => {
+    setTotalPages(numPages);
+    setNumPages(numPages)
+  };
+  console.log(totalPages, 'total')
+
+
+
+  useEffect(() => {
+    // Set toPage to the current value of numPage
+    setToPage(String(numPage));
+  }, [numPage]); // Trigger the effect whenever numPage changes
+
   if (isLoading) return <ProgressModal isLoading={isLoading} />;
 
+
+
+
+
   return (
+    <>
+
+  {isButtonClicked ? (
+      <SplitPdfMessage
+        splitedFileUrl={splitedFileUrl}
+        onClose={() => setIsButtonClicked(false)}
+      />
+    ) : (
     <div className="relative h-[100vh] overflow-y-auto">
       {/* HUMBURGER MENU  */}
       <div className="ml-3 md:hidden block pt-3">
@@ -109,22 +172,96 @@ const SplitPdfContent = () => {
             </div>
           </div>
 
-          <div className="flex mt-10 justify-center items-center gap-2 absolute top-[45%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+          {/* <div className="flex mt-10 justify-center items-center gap-2 absolute top-[45%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
             <div className="sm:w-[13rem] w-[10rem] h-[15rem] rounded-[0.5rem] overflow-y-auto bg-gray-100">
               <Document
                 file={location.state.pdf[0]}
+                onLoadSuccess={onLoadSuccess}
                 onLoadError={(error) =>
                   console.error("Error loading document:", error)
                 }
               >
-                <Page
-                  pageNumber={1}
-                  renderTextLayer={false}
-                  renderAnnotationLayer={false}
-                />
+              
+                    <Page
+                      pageNumber={1}
+                      renderTextLayer={false}
+                      renderAnnotationLayer={false}
+                    />
+
+                          
+                    {totalPages > 1 && (
+                      <Page
+                        pageNumber={numPage}
+                        renderTextLayer={false}
+                        renderAnnotationLayer={false}
+                      />
+                        
+                      )}
               </Document>
+
             </div>
-          </div>
+          </div> */}
+
+            <div className="flex mt-10 justify-center items-center gap-2 absolute top-[45%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+              <div className="sm:w-[13rem] w-[20rem] h-[15rem] rounded-[0.5rem] overflow-y-auto">
+                {/* Display the first page */}
+                <Document
+                  file={location.state.pdf[0]}
+                  onLoadSuccess={onLoadSuccess}
+                  onLoadError={(error) =>
+                    console.error("Error loading document:", error)
+                  }
+                >
+                  <Page
+                    pageNumber={parseInt(fromPage, 10)}
+                    renderTextLayer={false}
+                    renderAnnotationLayer={false}
+                  />
+                      <Text
+                      style={{
+                        position: 'absolute',
+                        top: 'calc(90% - 5px)',  // Adjust this value to move it up or down
+                        left: '25%',
+                        transform: 'translateX(-50%)',
+                        fontSize: '12px',
+                      }}
+                      >  {parseInt(fromPage, 10)}</Text>
+
+                </Document>
+              </div>
+
+              <div className="sm:w-[13rem] w-[20rem] h-[15rem] rounded-[0.5rem] overflow-y-auto">
+                {/* Display the last page if there are more than one page */}
+                {totalPages > 1 && (
+                  <Document
+                    file={location.state.pdf[0]}
+                    onLoadSuccess={onLoadSuccess}
+                    onLoadError={(error) =>
+                      console.error("Error loading document:", error)
+                    }
+                  >
+                    <Page
+                      pageNumber={parseInt(toPage, 10)}
+                      renderTextLayer={false}
+                      renderAnnotationLayer={false}
+                    />
+
+                      <Text
+                      style={{
+                        position: 'absolute',
+                        top: 'calc(90% - 5px)',  
+                        left: '75%',
+                        transform: 'translateX(-50%)',
+                        fontSize: '12px',
+                      }}
+                      >  Page {parseInt(toPage, 10)}</Text>
+                    
+                  </Document>
+                )}
+              </div>
+            </div>
+
+     
         </div>
 
         <div className="w-[18rem] hidden  shadow-CardShadow md:flex justify-start items-center flex-col pt-4 pb-4 relative">
@@ -180,6 +317,7 @@ const SplitPdfContent = () => {
                   <input
                     type="number"
                     value={fromPage}
+                    min="1"  
                     onChange={handleFromPageChange}
                     className="text-sm w-[40%] outline-none"
                   />
@@ -194,6 +332,7 @@ const SplitPdfContent = () => {
                     type="number"
                     value={toPage}
                     onChange={handleToPageChange}
+                    max={numPage} 
                     className="text-sm w-[40%] outline-none"
                   />
                 </div>
@@ -221,6 +360,7 @@ const SplitPdfContent = () => {
             <button
               className="bg-[#20808D] text-white w-[10rem] h-[2.5rem] rounded-md"
               onClick={splitHandler}
+              
             >
               Split PDF
             </button>
@@ -354,6 +494,8 @@ const SplitPdfContent = () => {
         </div>
       )}
     </div>
+     )}
+     </>
   );
 };
 

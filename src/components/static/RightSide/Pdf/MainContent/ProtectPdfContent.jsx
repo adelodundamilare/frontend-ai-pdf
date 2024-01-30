@@ -14,6 +14,7 @@ import { authRequest } from "../../../../../config/baseUrl";
 import ProgressModal from "../../../../Progress";
 import { toast } from "react-toastify";
 import { extractFilenameFromUrl } from "../../../../../constants/helpers";
+import ProtectPdfMessage from "./DownloadPDF/ProtectPdfMessage";
 
 const ProtectPdfContent = () => {
   const [showSideBar, setshowSideBar] = useState(false);
@@ -23,6 +24,9 @@ const ProtectPdfContent = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [isButtonClicked, setIsButtonClicked] = useState(false);
+  const [protectFileUrl, setProtectFileUrl] = useState(null);
+  const [progress, setProgress] = useState(0);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -50,7 +54,7 @@ const ProtectPdfContent = () => {
       formData.append("pdf_password", password);
 
       try {
-        setModalIsOpen(true);
+        // setModalIsOpen(true);
         const response = await authRequest.post("/pdf/protect_pdf/", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -63,13 +67,11 @@ const ProtectPdfContent = () => {
           },
         });
 
-        const protectedFileUrl = response.data.split_pdf.protected_file;
-        const link = document.createElement("a");
-        link.href = protectedFileUrl;
-        link.setAttribute("download", extractFilenameFromUrl(protectedFileUrl));
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        const newProtectedFileUrl = response.data.split_pdf.protected_file;
+        setProtectFileUrl(newProtectedFileUrl); 
+
+        setIsButtonClicked(true)
+        
         setIsLoading(false);
       } catch (error) {
         toast.error("Error protecting PDF");
@@ -83,6 +85,15 @@ const ProtectPdfContent = () => {
 
   return (
     <>
+
+{isButtonClicked ? (
+      <ProtectPdfMessage
+        protectFileUrl={protectFileUrl}
+        onClose={() => setIsButtonClicked(false)}
+      />
+    ) : (
+
+
       <div className="relative">
         {/* HUMBURGER MENU  */}
         <div className="ml-3 md:hidden block pt-3">
@@ -239,6 +250,8 @@ const ProtectPdfContent = () => {
           </div>
         )}
       </div>
+       )}
+       
     </>
   );
 };

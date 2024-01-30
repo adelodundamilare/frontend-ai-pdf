@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Left from "../../../LeftSide/Left";
 import BackIcon from "../../../../../assets/back.svg";
@@ -21,6 +21,7 @@ import { toast } from "react-toastify";
 import { authRequest } from "../../../../../config/baseUrl";
 import Progress from "../../../../Progress";
 import ProgressModal from "../../../../Progress";
+import MergedPdfMessage from "./DownloadPDF/MergedPdfMessage";
 
 const MergePdfContent = () => {
   const [showSideBar, setshowSideBar] = useState(false);
@@ -30,12 +31,33 @@ const MergePdfContent = () => {
   const location = useLocation();
   const [progress, setProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(0);
+  const [isButtonClicked, setIsButtonClicked] = useState(false);
+  const [mergedFileUrl, setMergedFileUrl] = useState(null);
+
+  console.log(isButtonClicked, 'isButtonClicked', mergedFileUrl)
+
+
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const fileInputRef = useRef(null);
+
+  console.log(selectedFiles, 'selected_files')
+
+  const handleFileInputChange = (e) => {
+    const files = e.target.files;
+    setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
+  };
+
 
   const mergePdfHandler = async () => {
     const formData = new FormData();
     location.state.pdf.map((item, idx) => {
       formData.append("pdf_files", location.state.pdf[idx]);
     });
+
+  // Append the newly selected files
+  selectedFiles.forEach((selectedFile) => {
+    formData.append("pdf_files", selectedFile);
+  });
 
     try {
       setIsLoading(true);
@@ -50,13 +72,15 @@ const MergePdfContent = () => {
           setProgress(calculatedProgress);
         },
       });
-      const mergedFileUrl = response.data.split_pdf.merged_file;
-      const link = document.createElement("a");
-      link.href = mergedFileUrl;
-      link.setAttribute("download", extractFilenameFromUrl(mergedFileUrl));
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const newMergedFileUrl = response.data.split_pdf.merged_file;
+      setMergedFileUrl(newMergedFileUrl); 
+      console.log(newMergedFileUrl, 'url')
+      // const link = document.createElement("a");
+      // link.href = mergedFileUrl;
+      // link.setAttribute("download", extractFilenameFromUrl(mergedFileUrl));
+      // document.body.appendChild(link);
+      // link.click();
+      // document.body.removeChild(link);
       setIsLoading(false);
     } catch (error) {
       toast.error(error);
@@ -65,10 +89,20 @@ const MergePdfContent = () => {
     }
   };
 
+
+
   if (isLoading) return <ProgressModal isLoading={isLoading} />;
 
   return (
+    
     <>
+
+{isButtonClicked ? (
+      <MergedPdfMessage
+        mergedFileUrl={mergedFileUrl}
+        onClose={() => setIsButtonClicked(false)}
+      />
+    ) : (
       <div className="relative h-[100vh] overflow-y-auto">
         {/* HUMBURGER MENU  */}
         <div className="ml-3 md:hidden block pt-3">
@@ -77,6 +111,10 @@ const MergePdfContent = () => {
             onClick={() => setshowSideBar(!showSideBar)}
           />
         </div>
+
+        
+
+
 
         {!lastStep ? (
           <div className="flex justify-between h-[95%] overflow-y-auto overflow-x-hidden font-roboto">
@@ -90,9 +128,24 @@ const MergePdfContent = () => {
               </div>
 
               <div className="absolute right-2">
-                <div className="w-[2rem] h-[2rem] rounded-[0.375rem] bg-[#20808d] flex justify-center items-center mb-2 cursor-pointer">
-                  <AiOutlinePlus alt="" className=" text-white" />
-                </div>
+             
+              <label
+                    htmlFor="fileInput"
+                    className="w-[2rem] h-[2rem] rounded-[0.375rem] bg-[#20808d] flex justify-center items-center mb-2 cursor-pointer hover:bg-[#106e75] transition-colors"
+                  >
+                    <AiOutlinePlus alt="" className="text-white" />
+                    <input
+                      id="fileInput"
+                      type="file"
+                      ref={fileInputRef}
+                      accept=".pdf"
+                      style={{ display: "none" }}
+                      onChange={handleFileInputChange}
+                    />
+                    <div className="tooltip bg-[#106e75] text-white  font-bold p-1 rounded-md absolute right-[3rem] max-w-[20rem] whitespace-nowrap overflow-hidden overflow-ellipsis">
+                    Add more files
+                  </div>
+                  </label>
 
                 <div className="w-[2rem] h-[2rem] rounded-[0.375rem] bg-[#20808d] flex justify-center items-center mb-2 cursor-pointer">
                   <FaCopy alt="" className=" text-white" />
@@ -108,12 +161,12 @@ const MergePdfContent = () => {
               </div>
 
               <div className="flex mt-10 justify-center flex-wrap overflow-scroll h-full items-center gap-2 absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
-                {location.state.pdf.map((item, index) => {
+                {[...location.state.pdf, ...selectedFiles].map((file, index) => {
                   return (
                     <div className="sm:w-[13rem] w-[10rem] h-[15rem] rounded-[0.5rem]  overflow-y-auto bg-gray-100">
                       <div className="w-[200px] h-[200px">
                         <Document
-                          file={location.state.pdf[index]}
+                          file={file}
                           onLoadError={(error) =>
                             console.error("Error loading document:", error)
                           }
@@ -140,12 +193,22 @@ const MergePdfContent = () => {
               </div>
 
               <div className=" absolute bottom-3 flex justify-center items-center">
-                <button
-                  className="bg-[#20808D] text-white w-[10rem] h-[2.5rem] rounded-md"
-                  onClick={mergePdfHandler}
-                >
-                  Merge PDF
-                </button>
+              <button
+                className={`w-[10rem] h-[2.5rem] rounded-md ${
+                  [...location.state.pdf, ...selectedFiles].length < 2
+                    ? 'bg-[#D3D3D3] text-[#666666] cursor-not-allowed' // Disabled styles
+                    : 'bg-[#20808D] text-white hover:bg-[#106e75] transition-colors' // Enabled styles
+                }`}
+                onClick={() => {
+                  mergePdfHandler();
+                  setIsButtonClicked(true);
+                }}
+                
+                disabled={[...location.state.pdf, ...selectedFiles].length < 2}
+              >
+                Merge PDF
+              </button>
+              
               </div>
             </div>
 
@@ -269,6 +332,7 @@ const MergePdfContent = () => {
           </div>
         )}
       </div>
+      )}
     </>
   );
 };

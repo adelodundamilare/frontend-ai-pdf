@@ -12,6 +12,7 @@ import { Document, Page } from "react-pdf";
 import { authRequest } from "../../../../../config/baseUrl";
 import ProgressModal from "../../../../Progress";
 import { extractFilenameFromUrl } from "../../../../../constants/helpers";
+import CompressPdfMessage from "./DownloadPDF/CompressPdfMessage";
 
 const CompressPdfContent = () => {
   const [showSideBar, setshowSideBar] = useState(false);
@@ -20,6 +21,9 @@ const CompressPdfContent = () => {
   const location = useLocation();
   const [selected, setSelected] = useState("recommended");
   const [isLoading, setIsLoading] = useState(false);
+  const [isButtonClicked, setIsButtonClicked] = useState(false);
+  const [compressedFileUrl, setCompressedFileUrl] = useState(null);
+
 
   const compressHandler = async (e) => {
     const formData = new FormData();
@@ -33,13 +37,14 @@ const CompressPdfContent = () => {
         },
       });
 
-      const mergedFileUrl = response.data.split_pdf.merged_file;
-      const link = document.createElement("a");
-      link.href = mergedFileUrl;
-      link.setAttribute("download", extractFilenameFromUrl(mergedFileUrl));
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      console.log(response, 'response')
+
+      const newcompressFileUrl = response.data.split_pdf.compressed_file;
+      setCompressedFileUrl(newcompressFileUrl); 
+
+      console.log(newcompressFileUrl, 'newcompressFileUrl')
+
+      setIsButtonClicked(true)
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -51,6 +56,17 @@ const CompressPdfContent = () => {
   if (isLoading) return <ProgressModal />;
 
   return (
+
+    <>
+
+    {isButtonClicked ? (
+          <CompressPdfMessage
+          compressedFileUrl={compressedFileUrl}
+            onClose={() => setIsButtonClicked(false)}
+          />
+        ) : (
+
+
     <div className="relative">
       {/* HUMBURGER MENU  */}
       <div className="ml-3 md:hidden block pt-3">
@@ -244,7 +260,11 @@ const CompressPdfContent = () => {
         </div>
       )}
     </div>
+     )}
+     </>
+   
   );
 };
+
 
 export default CompressPdfContent;
