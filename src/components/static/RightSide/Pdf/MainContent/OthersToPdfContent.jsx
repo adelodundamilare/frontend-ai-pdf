@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import Left from '../../../LeftSide/Left'
 import BackIcon from '../../../../../assets/back.svg'
 import { GiHamburgerMenu } from 'react-icons/gi'
@@ -8,12 +8,80 @@ import DeviceIcon from '../../../../../assets/device.svg'
 import DropBoxIcon from '../../../../../assets/dropbox.svg'
 import { AiOutlinePlus } from 'react-icons/ai'
 import { ImCross } from 'react-icons/im'
+import { Document, Page } from "react-pdf";
+import DocsLogo from '../../../../../assets/docs.svg'
+import OthersToPdfMessage from './DownloadPDF/OthersToPdfMessage'
+import ProgressModal from "../../../../Progress";
+import { toast } from 'react-toastify';
+import { authRequest } from '../../../../../config/baseUrl'
 
 const OthersToPdfContent = () => {
+    const location = useLocation();
+    console.log(location.state.docx[0], 'words')
     const [showSideBar, setshowSideBar] = useState(false)
     const [showLeftSideBar, setshowLeftSideBar] = useState(false)
     const nav = useNavigate()
+    const [isLoading, setIsLoading] = useState(false);
+    const [progress, setProgress] = useState(0);
+    const [isButtonClicked, setIsButtonClicked] = useState(false);
+    const [compressedFileUrl, setCompressedFileUrl] = useState(null);
+    const [mergeID, setMergeId] = useState(null);
+  
+
+
+
+    const OtherToPdfHandler = async () => {
+        setIsLoading(true)
+
+        const formData = new FormData();
+        location.state.docx.map((item, idx) => {
+        formData.append("input_files", location.state.docx[idx]);
+        });
+    
+        try {
+          const token = localStorage.getItem('token');
+          const response = await authRequest.post("/pdf/word_to_pdf/", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Token ${token}`
+            },
+          });
+
+          console.log(response, 'res')
+    
+          const newcompressFileUrl = response.data.conversion_data.word_to_pdfs[0].word_to_pdf;
+          setCompressedFileUrl(newcompressFileUrl); 
+          console.log(newcompressFileUrl, 'newcompressFileUrl')
+          const newMergeId = response.data.conversion_data.id
+          setMergeId(newMergeId)
+          setIsButtonClicked(true)
+          setIsLoading(false);
+        } catch (error) {
+          toast.error(error);
+          setIsLoading(false);
+          console.error("Error merging files:", error);
+        }
+      };
+    
+      console.log(isLoading, "jkj");
+    
+      if (isLoading) return <ProgressModal isLoading={isLoading} />;
+    
+
+
+
     return (
+
+        <>
+
+        {isButtonClicked ? (
+              <OthersToPdfMessage
+              mergeID ={mergeID}
+              compressedFileUrl={compressedFileUrl}
+                onClose={() => setIsButtonClicked(false)}
+              />
+            ) : (
+
         <div className='relative'>
 
             {/* HUMBURGER MENU  */}
@@ -53,7 +121,25 @@ const OthersToPdfContent = () => {
                     <div className='flex justify-center items-center absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]'>
 
                         <div className='w-[15rem] rounded-[0.5rem] bg-gray-100'>
-                            <p className='text-sm m-4 bg-white p-3'>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Incidunt ut quod dicta cum numquam adipisci rem odit. Corrupti sed quidem id esse beatae dolor facere eaque cupiditate, recusandae, perferendis placeat in impedit obcaecati, voluptatum ullam temporibus fugit. Error unde sapiente illo maxime cupiditate, porro exercitationem suscipit, amet quasi iste ut.</p>
+                            <p className='text-sm m-4 bg-white p-3'>
+                            <div style={{ height: '25vh', alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
+                                <img src={DocsLogo} alt="Docs Logo" />
+                            </div>
+                            {/* <Document
+                                    file={location.state.pdf[0]}
+                                    onLoadError={(error) =>
+                                    console.error("Error loading document:", error)
+                                    }
+                                >
+                                    <Page
+                                    pageNumber={1}
+                                    renderTextLayer={false}
+                                    renderAnnotationLayer={false}
+                                    />
+                                </Document> */}
+            
+                                
+                                </p>
                         </div>
                     </div>
 
@@ -69,7 +155,9 @@ const OthersToPdfContent = () => {
 
 
                     <div className=' absolute bottom-3 flex justify-center items-center'>
-                        <button className='bg-[#20808D] text-white w-[10rem] h-[2.5rem] rounded-md'>Convert</button>
+                        <button className='bg-[#20808D] text-white w-[10rem] h-[2.5rem] rounded-md'
+                         onClick={OtherToPdfHandler}
+                        >Convert</button>
                     </div>
 
                 </div>
@@ -113,6 +201,8 @@ const OthersToPdfContent = () => {
                 )
             }
         </div>
+         )}
+         </>
     )
 }
 

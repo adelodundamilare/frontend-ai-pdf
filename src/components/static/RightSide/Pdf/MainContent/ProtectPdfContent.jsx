@@ -27,6 +27,7 @@ const ProtectPdfContent = () => {
   const [isButtonClicked, setIsButtonClicked] = useState(false);
   const [protectFileUrl, setProtectFileUrl] = useState(null);
   const [progress, setProgress] = useState(0);
+  const [mergeID, setMergeId] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -69,6 +70,8 @@ const ProtectPdfContent = () => {
 
         const newProtectedFileUrl = response.data.split_pdf.protected_file;
         setProtectFileUrl(newProtectedFileUrl); 
+        const newMergeId = response.data.split_pdf.id
+        setMergeId(newMergeId)
 
         setIsButtonClicked(true)
         
@@ -88,6 +91,7 @@ const ProtectPdfContent = () => {
 
 {isButtonClicked ? (
       <ProtectPdfMessage
+         mergeID={mergeID}
         protectFileUrl={protectFileUrl}
         onClose={() => setIsButtonClicked(false)}
       />
@@ -131,8 +135,9 @@ const ProtectPdfContent = () => {
               </div>
             </div>
 
-            <div className="flex justify-center items-center absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
-              <div className="w-[15rem] rounded-[0.5rem] bg-gray-100">
+            <div className='flex justify-center items-center absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]'>
+            <div className='w-[15rem] rounded-[0.5rem] bg-gray-100'>
+              <p className='text-sm m-3 bg-white p-2'>
                 <Document
                   file={location.state.pdf[0]}
                   onLoadError={(error) =>
@@ -145,6 +150,7 @@ const ProtectPdfContent = () => {
                     renderAnnotationLayer={false}
                   />
                 </Document>
+                </p>
               </div>
             </div>
           </div>

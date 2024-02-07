@@ -25,7 +25,7 @@ const UserProfile = () => {
     localStorage.removeItem('token')
     localStorage.removeItem('username')
     // Redirect to the login page
-    navigateTo('/');  // Replace with the actual path to your login page
+    navigateTo('/login-route');  // Replace with the actual path to your login page
   };
 
 

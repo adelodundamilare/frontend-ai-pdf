@@ -13,6 +13,7 @@ import ProgressModal from "../../../../Progress";
 import { Document, Page } from "react-pdf";
 import { authRequest } from "../../../../../config/baseUrl";
 import { toast } from "react-toastify";
+import PdfToOtherFormatMessage from "./DownloadPDF/PdfToOtherFormatMessage";
 
 const PdfToOtherContent = () => {
   const [showSideBar, setshowSideBar] = useState(false);
@@ -21,26 +22,34 @@ const PdfToOtherContent = () => {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [isButtonClicked, setIsButtonClicked] = useState(false);
+  const [compressedFileUrl, setCompressedFileUrl] = useState(null);
+  const [mergeID, setMergeId] = useState(null);
 
   const pdfToOtherHandler = async () => {
-    setIsLoading(true);
+    setIsLoading(true)
     const formData = new FormData();
     formData.append("input_pdf", location.state.pdf[0]);
 
     try {
       const response = await authRequest.post("/pdf/pdf_to_image/", formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "multipart/form-data"
         },
       });
 
-      const mergedFileUrl = response.data.split_pdf.merged_file;
-      const link = document.createElement("a");
-      link.href = mergedFileUrl;
-      link.setAttribute("download", extractFilenameFromUrl(mergedFileUrl));
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const newcompressFileUrl = response.data.conversion_data.zip_file;
+      setCompressedFileUrl(newcompressFileUrl); 
+      console.log(newcompressFileUrl, 'newcompressFileUrl')
+      const newMergeId = response.data.conversion_data.id
+      setMergeId(newMergeId)
+      setIsButtonClicked(true)
+      // const link = document.createElement("a");
+      // link.href = mergedFileUrl;
+      // link.setAttribute("download", extractFilenameFromUrl(mergedFileUrl));
+      // document.body.appendChild(link);
+      // link.click();
+      // document.body.removeChild(link);
       setIsLoading(false);
     } catch (error) {
       toast.error(error);
@@ -54,6 +63,21 @@ const PdfToOtherContent = () => {
   if (isLoading) return <ProgressModal isLoading={isLoading} />;
 
   return (
+
+
+    <>
+
+    {isButtonClicked ? (
+          <PdfToOtherFormatMessage
+          mergeID ={mergeID}
+          compressedFileUrl={compressedFileUrl}
+          onClose={() => setIsButtonClicked(false)}
+          />
+        ) : (
+
+
+
+
     <div className="relative overflow-y-hidden">
       {/* HUMBURGER MENU  */}
       <div className="ml-3 md:hidden block pt-3">
@@ -91,8 +115,9 @@ const PdfToOtherContent = () => {
             </div>
           </div>
 
-          <div className="flex justify-center items-center absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
-            <div className="w-[15rem] rounded-[0.5rem] bg-gray-100">
+          <div className='flex justify-center items-center absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]'>
+          <div className='w-[15rem] rounded-[0.5rem] bg-gray-100'>
+            <p className='text-sm m-3 bg-white p-2'>
               <Document
                 file={location.state.pdf[0]}
                 onLoadError={(error) =>
@@ -105,6 +130,7 @@ const PdfToOtherContent = () => {
                   renderAnnotationLayer={false}
                 />
               </Document>
+              </p>
             </div>
           </div>
         </div>
@@ -200,6 +226,8 @@ const PdfToOtherContent = () => {
         </div>
       )}
     </div>
+)}
+</>
   );
 };
 

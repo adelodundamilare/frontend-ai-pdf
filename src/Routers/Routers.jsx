@@ -37,6 +37,7 @@ import "react-toastify/dist/ReactToastify.css";
 import LoginAndRegistrationPopup from "../components/dynamic/Popup/LoginAndRegistrationPopup";
 import SubscriptionPopup from "../components/dynamic/Popup/SubscriptionPopup";
 import PaymentPage from "../components/dynamic/Popup/Paymentpage";
+import ResetPassword from "../components/dynamic/Popup/ResetPassword";
 
 const Routers = () => {
   return (
@@ -105,6 +106,7 @@ const Routers = () => {
         <Route path="/login-route" element={<LoginAndRegistrationPopup />} />
         <Route path="/subscription" element={<SubscriptionPopup />} />
         <Route path="/select/payment" element={<PaymentPage />} />
+        <Route path="/accounts/password_reset/confirm/" element={<ResetPassword />} />
       </Routes>
     </>
   );

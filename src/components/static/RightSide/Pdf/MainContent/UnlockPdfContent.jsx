@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import Left from '../../../LeftSide/Left'
 import BackIcon from '../../../../../assets/back.svg'
 import { GiHamburgerMenu } from 'react-icons/gi'
@@ -8,14 +8,103 @@ import DeviceIcon from '../../../../../assets/device.svg'
 import DropBoxIcon from '../../../../../assets/dropbox.svg'
 import { AiOutlinePlus } from 'react-icons/ai'
 import { ImCross } from 'react-icons/im'
+import { Document, Page } from "react-pdf";
+import { toast } from "react-toastify";
+import { authRequest } from '../../../../../config/baseUrl'
+import LockPdf from '../../../../../assets/lockpdf.png'
+import ProgressModal from "../../../../Progress";
+import UnlockPdfMessage from './DownloadPDF/UnlockPdfMessage'
+
+  
+  
 
 const UnlockPdfContent = () => {
 
     const [showSideBar, setshowSideBar] = useState(false)
     const [showLeftSideBar, setshowLeftSideBar] = useState(false)
+    const [password, setPassword] = useState("");
+    console.log(password.length, 'pass')
+    const [progress, setProgress] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isButtonClicked, setIsButtonClicked] = useState(false);
+    const [compressedFileUrl, setCompressedFileUrl] = useState(null);
+    const [mergeID, setMergeId] = useState(null);
     const nav = useNavigate()
+    const location = useLocation();
+    console.log(location.state.pdf[0], 'pdf')
+    const pdfFile = location.state.pdf[0];
+
+
+   
+
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
+      };
+
+
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+      
+        const formData = new FormData();
+        formData.append("input_pdf", location.state.pdf[0]);
+        formData.append("password", password);
+      
+        try {
+          const response = await authRequest.post("/pdf/unlock_pdf/", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            onUploadProgress: (progressEvent) => {
+              const calculatedProgress = Math.round(
+                (progressEvent.loaded / progressEvent.total) * 100
+              );
+              setProgress(calculatedProgress);
+            },
+          });
+      
+          // Handle successful response here
+          console.log(response, 'r');
+          const newcompressFileUrl = response.data.unlocked_pdf.unlock_pdf;
+          setCompressedFileUrl(newcompressFileUrl); 
+          console.log(newcompressFileUrl, 'newcompressFileUrl')
+          const newMergeId = response.data.unlocked_pdf.id
+          setMergeId(newMergeId)
+    
+          setIsButtonClicked(true)
+      
+          setIsLoading(false);
+        } catch (error) {
+          if (error.response) {
+
+            const errorMessage = error.response.data.error;
+            toast.error(`${errorMessage}`);
+          } else if (error.request) {
+            // The request was made but no response was received
+            toast.error("No response from the server");
+          } else {
+            // Something happened in setting up the request that triggered an Error
+            toast.error("Unexpected error");
+          }
+      
+          setIsLoading(false);
+        }
+      };
+
+    if (isLoading) return <ProgressModal isLoading={isLoading} />;      
 
     return (
+        <>
+
+        {isButtonClicked ? (
+            <UnlockPdfMessage
+            mergeID ={mergeID}
+            compressedFileUrl={compressedFileUrl}
+              onClose={() => setIsButtonClicked(false)}
+            />
+          ) : (
+
+
         <div className='relative'>
 
             {/* HUMBURGER MENU  */}
@@ -55,7 +144,27 @@ const UnlockPdfContent = () => {
                     <div className='flex justify-center items-center absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]'>
 
                         <div className='w-[15rem] rounded-[0.5rem] bg-gray-100'>
-                            <p className='text-sm m-4 bg-white p-3'>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Incidunt ut quod dicta cum numquam adipisci rem odit. Corrupti sed quidem id esse beatae dolor facere eaque cupiditate, recusandae, perferendis placeat in impedit obcaecati, voluptatum ullam temporibus fugit. Error unde sapiente illo maxime cupiditate, porro exercitationem suscipit, amet quasi iste ut.</p>
+                            <p className='text-sm m-3 bg-white p-2'>
+                              
+                                
+                                {/* <Document
+                                        file={location.state.pdf[0]}
+                                        onLoadError={(error) =>
+                                        console.error("Error loading document:", error)
+                                        }
+                                    >
+                                        <Page
+                                        pageNumber={1}
+                                        renderTextLayer={false}
+                                        renderAnnotationLayer={false}
+                                />
+                                
+                               </Document> */}
+                               <img src={LockPdf} alt="" />
+                             
+                                </p>
+
+                                <span style={{ display: 'block', textAlign: 'center', margin: '0 auto' }} className="font-bold">{pdfFile.name}</span>
                         </div>
                     </div>
 
@@ -68,11 +177,33 @@ const UnlockPdfContent = () => {
                     <div className='flex justify-center items-center flex-col'>
                         <p className='text-lg text-center pl-4 pr-4'>Unlock Pdf</p>
                     </div>
+                    <form onSubmit={handleSubmit}>
+
+                    <div className='flex justify-center items-center flex-col mt-10'>
+                   
+                    <input
+                            style={{ border: "1px solid rgba(48, 48, 48, 0.50)" }}
+                            type="password"
+                            placeholder="Type your password"
+                            className="w-[100%] h-[2.3rem] rounded-md pl-3 pr-3 text-[#303030] outline-none"
+                        
+                            onChange={handlePasswordChange}
+                            />
+                    </div>
+
 
 
                     <div className=' absolute bottom-3 flex justify-center items-center'>
-                        <button className='bg-[#20808D] text-white w-[10rem] h-[2.5rem] rounded-md'>Unlock</button>
+                    <button
+                    type='submit'
+                    className={`w-[10rem] h-[2.5rem] rounded-md ${
+                    password.length === 0 ? 'bg-[#d9d9d9] text-[#8c8c8c]' : 'bg-[#20808D] text-white'
+                    }`}
+                    disabled={password.length === 0}
+                    >
+                    Unlock</button>
                     </div>
+                    </form>
 
                 </div>
 
@@ -99,7 +230,7 @@ const UnlockPdfContent = () => {
                             </div>
 
                             <div className=' absolute bottom-3 flex justify-center items-center'>
-                                <button className='bg-[#20808D] text-white w-[10rem] h-[2.5rem] rounded-md'>Unlock</button>
+                                <button className='bg-[#20808D] text-white w-[10rem] h-[2.5rem] rounded-md'   >Unlock</button>
                             </div>
 
 
@@ -115,6 +246,8 @@ const UnlockPdfContent = () => {
                 )
             }
         </div>
+        )}
+        </>
     )
 }
 

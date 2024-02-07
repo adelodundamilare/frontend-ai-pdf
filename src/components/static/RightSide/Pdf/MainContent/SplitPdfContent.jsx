@@ -27,6 +27,7 @@ const SplitPdfContent = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isButtonClicked, setIsButtonClicked] = useState(false);
   const [splitedFileUrl, setSplitedFileUrl] = useState(null);
+  const [mergeID, setMergeId] = useState(null);
 
   const [totalPages, setTotalPages] = useState(0); 
   const [numPage, setNumPages] = useState(0); 
@@ -90,6 +91,8 @@ const SplitPdfContent = () => {
       console.log(response, 'response')
       const newSplitedFileUrl = response.data.split_pdf.split_pdf;
       console.log(newSplitedFileUrl, 'newSplitedFileUrl')
+      const newMergeId = response.data.split_pdf.id
+      setMergeId(newMergeId)
 
       setSplitedFileUrl(newSplitedFileUrl); 
       // const link = document.createElement("a");
@@ -131,6 +134,7 @@ const SplitPdfContent = () => {
 
   {isButtonClicked ? (
       <SplitPdfMessage
+        mergeID={mergeID}
         splitedFileUrl={splitedFileUrl}
         onClose={() => setIsButtonClicked(false)}
       />
@@ -202,9 +206,10 @@ const SplitPdfContent = () => {
             </div>
           </div> */}
 
-            <div className="flex mt-10 justify-center items-center gap-2 absolute top-[45%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
-              <div className="sm:w-[13rem] w-[20rem] h-[15rem] rounded-[0.5rem] overflow-y-auto">
+        <div className='flex justify-center items-center absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]'>
+            <div className='w-[15rem] rounded-[0.5rem] bg-gray-100'>
                 {/* Display the first page */}
+                <p className='text-sm m-3  bg-white p-2'>
                 <Document
                   file={location.state.pdf[0]}
                   onLoadSuccess={onLoadSuccess}
@@ -228,11 +233,15 @@ const SplitPdfContent = () => {
                       >  {parseInt(fromPage, 10)}</Text>
 
                 </Document>
+                </p>
               </div>
 
-              <div className="sm:w-[13rem] w-[20rem] h-[15rem] rounded-[0.5rem] overflow-y-auto">
+              <div className='w-[15rem] rounded-[0.5rem] bg-gray-100'>
+                {/* Display the first page */}
+               
                 {/* Display the last page if there are more than one page */}
                 {totalPages > 1 && (
+                   <p className='text-sm m-3  bg-white p-2'>
                   <Document
                     file={location.state.pdf[0]}
                     onLoadSuccess={onLoadSuccess}
@@ -257,6 +266,7 @@ const SplitPdfContent = () => {
                       >  Page {parseInt(toPage, 10)}</Text>
                     
                   </Document>
+                  </p>
                 )}
               </div>
             </div>

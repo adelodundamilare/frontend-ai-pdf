@@ -20,16 +20,54 @@ const Main = ({ title, description, link }) => {
 
   const handleClick = async (event) => {
     let selectedFiles = event.target.files;
+    // if (!selectedFiles.length) {
+    //   toast.warn("Please select at least one file.");
+    //   return;
+    // }
+
     if (locat.pathname === "/pdf/merge" || locat.pathname === "/pdf/organize") {
+      console.log('if')
       if (!selectedFiles.length >= 2) {
         toast.warn("Please select exactly two files.");
         return;
       }
       nav(link, { state: { pdf: Array.from(selectedFiles) } });
       return;
+    }else if (locat.pathname === "/pdf/other/to/pdf") {
+      nav(link, { state: { docx: Array.from(selectedFiles) } });
+      // nav(link, { state: { docx: selectedFiles } });
+    } else{
+      nav(link, { state: { pdf: selectedFiles } });
     }
+   
 
-    nav(link, { state: { pdf: selectedFiles } });
+    // nav(link, { state: { pdf: selectedFiles } });
+   
+    
+  } 
+
+
+
+  const renderFileSelectionButton = () => {
+    if (locat.pathname === "/pdf/other/to/pdf") {
+      return (
+        <label
+          htmlFor="fileInput"
+          className="bg-[#20808D] text-white w-[12rem] h-[2.4rem] rounded-md flex items-center justify-center cursor-pointer"
+        >
+          Select Word file
+        </label>
+      );
+    } else {
+      return (
+        <label
+          htmlFor="fileInput"
+          className="bg-[#20808D] text-white w-[12rem] h-[2.4rem] rounded-md flex items-center justify-center cursor-pointer"
+        >
+          Select PDF file
+        </label>
+      );
+    }
   };
 
   return (
@@ -73,7 +111,7 @@ const Main = ({ title, description, link }) => {
               </div>
 
               <div className="flex-1 flex justify-between items-center ml-3 mr-3">
-                <p className="text-[#47474F]">Doc</p>
+                <p className="text-[#47474F]">JPEG</p>
                 <img src={ArrowDownIcon} className=" cursor-pointer" />
               </div>
             </div>
@@ -103,12 +141,13 @@ const Main = ({ title, description, link }) => {
                 onChange={handleClick}
               />
 
-              <label
+              {/* <label
                 htmlFor="fileInput"
                 className="bg-[#20808D] text-white w-[12rem] h-[2.4rem] rounded-md flex items-center justify-center cursor-pointer"
               >
                 Select PDF file
-              </label>
+              </label> */}
+               {renderFileSelectionButton()}
             </div>
           </div>
 

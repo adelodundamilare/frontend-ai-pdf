@@ -23,6 +23,8 @@ const CompressPdfContent = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isButtonClicked, setIsButtonClicked] = useState(false);
   const [compressedFileUrl, setCompressedFileUrl] = useState(null);
+  const [mergeID, setMergeId] = useState(null);
+  const pdfFile = location.state.pdf[0]
 
 
   const compressHandler = async (e) => {
@@ -41,8 +43,9 @@ const CompressPdfContent = () => {
 
       const newcompressFileUrl = response.data.split_pdf.compressed_file;
       setCompressedFileUrl(newcompressFileUrl); 
-
       console.log(newcompressFileUrl, 'newcompressFileUrl')
+      const newMergeId = response.data.split_pdf.id
+      setMergeId(newMergeId)
 
       setIsButtonClicked(true)
       setIsLoading(false);
@@ -61,6 +64,7 @@ const CompressPdfContent = () => {
 
     {isButtonClicked ? (
           <CompressPdfMessage
+          mergeID ={mergeID}
           compressedFileUrl={compressedFileUrl}
             onClose={() => setIsButtonClicked(false)}
           />
@@ -104,8 +108,9 @@ const CompressPdfContent = () => {
             </div>
           </div>
 
-          <div className="flex justify-center items-center absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
-            <div className="w-[15rem] rounded-[0.5rem] bg-gray-100">
+          <div className='flex justify-center items-center absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]'>
+          <div className='w-[15rem] rounded-[0.5rem] bg-gray-100'>
+            <p className='text-sm m-3 bg-white p-2'>
               <Document
                 file={location.state.pdf[0]}
                 onLoadError={(error) =>
@@ -118,6 +123,8 @@ const CompressPdfContent = () => {
                   renderAnnotationLayer={false}
                 />
               </Document>
+              </p>
+              <span style={{ display: 'block', textAlign: 'center', margin: '0 auto' }} className="font-bold">{pdfFile.name}</span>
             </div>
           </div>
         </div>
