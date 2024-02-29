@@ -1,4 +1,4 @@
-// LEFT NAV LINKS 
+// LEFT NAV LINKS
 
 import React, { useState, useEffect } from 'react'
 import SearchIcon from '../../../assets/search.svg'
@@ -25,7 +25,6 @@ const Left = ({setshowSideBar,showSidebar}) => {
 
   const [userProfile, setUserProfile] = useState([]);
   const [username, setUsername] = useState('');
-  console.log(username, 'username')
   // const [showSubscriptionPopup, setshowSubscriptionPopup] = useState(false)
 
 
@@ -35,7 +34,7 @@ const Left = ({setshowSideBar,showSidebar}) => {
   const nav = useNavigate()
 
 
-  
+
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -47,14 +46,14 @@ const Left = ({setshowSideBar,showSidebar}) => {
             Authorization: `Token ${token}`,
           },
         });
-  
-        const userProfile1 = profileResponse.data;    
+
+        const userProfile1 = profileResponse.data;
         const username = userProfile1[0].email
         setUsername(username)
 
       }
 
-        
+
 
       get_user_profile()
 
@@ -67,7 +66,7 @@ const Left = ({setshowSideBar,showSidebar}) => {
     nav('/subscription');
   };
 
-  
+
 
 
   return (

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {toast} from 'react-toastify'
 import { useLocation, useNavigate } from "react-router-dom";
 import Left from "../../../LeftSide/Left";
 import BackIcon from "../../../../../assets/back.svg";
@@ -42,7 +43,7 @@ const CompressPdfContent = () => {
       console.log(response, 'response')
 
       const newcompressFileUrl = response.data.split_pdf.compressed_file;
-      setCompressedFileUrl(newcompressFileUrl); 
+      setCompressedFileUrl(newcompressFileUrl);
       console.log(newcompressFileUrl, 'newcompressFileUrl')
       const newMergeId = response.data.split_pdf.id
       setMergeId(newMergeId)
@@ -269,7 +270,7 @@ const CompressPdfContent = () => {
     </div>
      )}
      </>
-   
+
   );
 };
 
