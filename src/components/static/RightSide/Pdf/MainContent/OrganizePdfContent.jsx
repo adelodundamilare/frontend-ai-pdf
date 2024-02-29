@@ -1,45 +1,117 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import Left from "../../../LeftSide/Left";
-import BackIcon from "../../../../../assets/back.svg";
-import { GiHamburgerMenu } from "react-icons/gi";
 import { FaCopy } from "react-icons/fa";
-import DeviceIcon from "../../../../../assets/device.svg";
-import DropBoxIcon from "../../../../../assets/dropbox.svg";
-import { AiOutlinePlus } from "react-icons/ai";
 import { ImCross } from "react-icons/im";
 import { Document, Page } from "react-pdf";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { toast } from "react-toastify";
+import { AiOutlinePlus } from "react-icons/ai";
+//
+import Left from "../../../LeftSide/Left";
+import { authRequest } from "../../../../../config/baseUrl";
+import BackIcon from "../../../../../assets/back.svg";
+import { GiHamburgerMenu } from "react-icons/gi";
+import DeviceIcon from "../../../../../assets/device.svg";
+import DropBoxIcon from "../../../../../assets/dropbox.svg";
+import ProgressModal from "../../../../Progress";
+import Message from "./DownloadPDF/Message";
+
+const grid = 8;
+
+const getItemStyle = (isDragging, draggableStyle) => ({
+  userSelect: "none",
+  padding: 2,
+  margin: `0 ${grid}px 0 0`,
+  background: isDragging ? "lightgreen" : "#ccc",
+  ...draggableStyle,
+});
+
+const getListStyle = (isDraggingOver) => ({
+  background: isDraggingOver ? "lightblue" : "lightgrey",
+  display: "flex",
+  padding: grid,
+  overflow: "auto",
+});
 
 const OrganizePdfContent = () => {
+  const [numPages, setNumPages] = useState(0);
+  const location = useLocation();
+  const [pdfFile] = useState(location.state.pdf[0]);
+  const [items, setItems] = useState([]);
   const [showSideBar, setshowSideBar] = useState(false);
   const [showLeftSideBar, setshowLeftSideBar] = useState(false);
   const nav = useNavigate();
+  const [isButtonClicked, setIsButtonClicked] = useState(false);
+  const [fileUrl, setFileUrl] = useState(null);
   const [isLoading, setIsLoading] = useState(0);
-  const location = useLocation();
-  const [dragableContent, setDragableContent] = useState([]);
+  const [mergeID, setMergeId] = useState(null);
 
-  useEffect(() => {
-    if (location.state && location.state.pdf) {
-      const updatedContent = location.state.pdf.map((pdf, index) => ({
-        id: (index + 1).toString(),
-        ...pdf,
-      }));
-      setDragableContent(updatedContent);
+  const onDragEnd = useCallback(
+    (result) => {
+      if (!result.destination) return;
+      const reorderedItems = Array.from(items);
+      const [removed] = reorderedItems.splice(result.source.index, 1);
+      reorderedItems.splice(result.destination.index, 0, removed);
+
+      setItems(reorderedItems);
+    },
+    [items]
+  );
+
+  const onDocumentLoadSuccess = ({ numPages }) => {
+    setNumPages(numPages);
+    const pdfItems = Array.from({ length: numPages }, (_, index) => ({
+      id: `page-${index + 1}`,
+      pageNumber: index + 1,
+      content: `Page ${index + 1}`,
+    }));
+    setItems(pdfItems);
+  };
+
+  if (!pdfFile) return <p>no pdf selected</p>;
+
+  const handler = async (e) => {
+    const formData = new FormData();
+    formData.append("input_pdf", location.state.pdf[0]);
+    formData.append(
+      "user_order",
+      items.map((item) => item.pageNumber)
+    );
+
+    try {
+      setIsLoading(true);
+      const response = await authRequest.post("/pdf/organize_pdf/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const fileUrl = response.data.organized_data.organize_pdf;
+      console.log({ fileUrl });
+      setFileUrl(fileUrl);
+
+      setIsButtonClicked(true);
+      toast.success("PDF organized successfully");
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      toast.error(error?.message);
+      console.error("Error stamping files:", error);
     }
-  }, [location.state]);
+  };
 
-  function handleOnDragEnd(result) {
-    if (!result.destination) return;
+  if (isLoading) return <ProgressModal />;
 
-    const items = Array.from(dragableContent);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-
-    setDragableContent(items);
+  if (isButtonClicked) {
+    return (
+      <Message
+        mergeID={mergeID}
+        fileUrl={fileUrl}
+        title="PDFs have been Organized!"
+        onClose={() => setIsButtonClicked(false)}
+      />
+    );
   }
-
-  console.log(dragableContent, "kjkjk");
 
   return (
     <div className="relative">
@@ -78,46 +150,58 @@ const OrganizePdfContent = () => {
               <img src={DropBoxIcon} alt="" />
             </div>
           </div>
-
-          <div className="flex justify-center mt-10 items-center absolute flex-wrap gap-2 h-full overflow-scroll top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
-            <DragDropContext onDragEnd={handleOnDragEnd}>
-              <Droppable droppableId="44ee" className="flex flex-row gap-2">
-                {(provided) => (
+          {pdfFile && (
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="droppable" direction="horizontal">
+                {(provided, snapshot) => (
                   <div
-                    {...provided.droppableProps}
                     ref={provided.innerRef}
-                    className="flex flex-row gap-2 flex-wrap"
+                    style={getListStyle(snapshot.isDraggingOver)}
+                    {...provided.droppableProps}
+                    className="flex gap-2"
                   >
-                    {dragableContent?.map(({ id, name, thumb }, index) => {
-                      return (
-                        <Draggable key={id} draggableId={id} index={index}>
-                          {(provided) => (
-                            <div
-                              className="sm:w-[13rem] w-[10rem] h-[15rem] rounded-[0.5rem]  bg-gray-100"
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                            >
-                              <div className="w-[200px] h-[200px]">
-                                <Document file={location.state.pdf[index]}>
+                    <Document
+                      file={pdfFile}
+                      onLoadSuccess={onDocumentLoadSuccess}
+                    >
+                      <div className="flex">
+                        {items.map((item, index) => (
+                          <Draggable
+                            key={item.id}
+                            draggableId={item.id}
+                            index={index}
+                          >
+                            {(provided, snapshot) => {
+                              return (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  style={getItemStyle(
+                                    snapshot.isDragging,
+                                    provided.draggableProps.style
+                                  )}
+                                >
                                   <Page
-                                    pageNumber={1}
+                                    pageNumber={item.pageNumber}
+                                    // pageNumber={index + 1}
                                     renderTextLayer={false}
                                     renderAnnotationLayer={false}
+                                    width={250}
                                   />
-                                </Document>
-                              </div>
-                            </div>
-                          )}
-                        </Draggable>
-                      );
-                    })}
-                    {provided.placeholder}
+                                </div>
+                              );
+                            }}
+                          </Draggable>
+                        ))}
+                        {provided.placeholder}
+                      </div>
+                    </Document>
                   </div>
                 )}
               </Droppable>
             </DragDropContext>
-          </div>
+          )}
         </div>
 
         <div className="w-[13rem] hidden  shadow-CardShadow md:flex justify-start items-center flex-col pt-4 pb-4 relative">
@@ -150,7 +234,10 @@ const OrganizePdfContent = () => {
           </div>
 
           <div className=" absolute bottom-3 flex justify-center items-center">
-            <button className="bg-[#20808D] text-white w-[10rem] h-[2.5rem] rounded-md">
+            <button
+              onClick={handler}
+              className="bg-[#20808D] text-white w-[10rem] h-[2.5rem] rounded-md"
+            >
               Organize
             </button>
           </div>
@@ -211,7 +298,10 @@ const OrganizePdfContent = () => {
               </div>
 
               <div className=" absolute bottom-3 flex justify-center items-center">
-                <button className="bg-[#20808D] text-white w-[10rem] h-[2.5rem] rounded-md">
+                <button
+                  type="button"
+                  className="bg-[#20808D] text-white w-[10rem] h-[2.5rem] rounded-md"
+                >
                   Organize
                 </button>
               </div>
