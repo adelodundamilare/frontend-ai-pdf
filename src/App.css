@@ -99,7 +99,7 @@ body {
 .paypal-icon {
   width: 30px;
   height: 30px;
-  background-image: url("path_to_paypal_icon.png");
+  /* background-image: url("path_to_paypal_icon.png"); */
   /* Replace 'path_to_paypal_icon.png' with the actual path to your PayPal icon */
 }
 
@@ -116,7 +116,7 @@ body {
 .google-icon {
   width: 30px;
   height: 30px;
-  background-image: url("path_to_google_icon.png");
+  /* background-image: url("path_to_google_icon.png"); */
   /* Replace 'path_to_google_icon.png' with the actual path to your Google Pay icon */
 }
 
@@ -138,7 +138,7 @@ body {
 .credit-card-icon {
   width: 30px;
   height: 30px;
-  background-image: url("path_to_credit_card_icon.png");
+  /* background-image: url("path_to_credit_card_icon.png"); */
   /* Replace 'path_to_credit_card_icon.png' with the actual path to your Credit Card icon */
 }
 
@@ -147,7 +147,6 @@ body {
   color: black !important;
   border-color: #fff;
 }
-
 
 /* #payment Screen css */
 
@@ -198,20 +197,20 @@ body {
   justify-content: space-between;
   gap: 20rem;
 }
-.test{
+.test {
   height: 100vh;
   /* margin-top: 100px; */
-  background-color: #f2f2f2; 
-  border-bottom: 2px solid #ccc; 
+  background-color: #f2f2f2;
+  border-bottom: 2px solid #ccc;
 }
-.test h1{
+.test h1 {
   font-size: 30px;
   margin-top: 25px;
 }
 
 .payment-buttons-container {
   display: flex;
-  justify-content: space-between;  /* or 'space-around' depending on your preference */
-  margin: 20px;  /* Adjust margin as needed */
+  justify-content: space-between; /* or 'space-around' depending on your preference */
+  margin: 20px; /* Adjust margin as needed */
   gap: 1rem;
 }
