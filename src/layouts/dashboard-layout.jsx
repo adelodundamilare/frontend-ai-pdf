@@ -1,4 +1,3 @@
-import React from "react";
 import Left from "@/components/static/LeftSide/Left";
 
 const DashboardLayout = ({ children }) => {

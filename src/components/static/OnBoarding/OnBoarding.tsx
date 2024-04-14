@@ -78,7 +78,7 @@ const OnBoarding = () => {
                 className="w-[18rem] h-[2.8rem] font-bold tracking-wide bg-transparent rounded-md text-[#20808D] flex justify-center items-center gap-3"
               >
                 Try Now For Free
-                <img src={ArrowImage} alt="arrow-image" loading="true" />
+                <img src={ArrowImage} alt="arrow-image" loading="lazy" />
               </button>
             </div>
           </div>
@@ -94,7 +94,7 @@ const OnBoarding = () => {
             className="w-[18rem] hover:bg-[#20808D] hover:text-white h-[2.8rem] font-bold tracking-wide bg-transparent rounded-md text-[#20808D] flex justify-center items-center gap-3"
           >
             Try Now For Free
-            <img src={ArrowImage} alt="arrow-image" loading="true" />
+            <img src={ArrowImage} alt="arrow-image" loading="lazy" />
           </button>
         </div>
       </div>
