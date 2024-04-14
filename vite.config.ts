@@ -4,11 +4,6 @@ import copy from "rollup-plugin-copy";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  resolve: {
-    alias: {
-      "@": "/src",
-    },
-  },
   plugins: [
     copy({
       targets: [
@@ -21,4 +16,9 @@ export default defineConfig({
     }),
     react(),
   ],
+  resolve: {
+    alias: {
+      "@": "/src",
+    },
+  },
 });
