@@ -1,13 +1,13 @@
-import React from 'react'
-import Dashboard from '../../components/dynamic/Dashboard/Dashboard'
-import Chat from '../../components/static/RightSide/Chat/Chat'
+import React from "react";
+import Chat from "@/components/static/RightSide/Chat/Chat";
+import DashboardLayout from "@/layouts/dashboard-layout";
 
 const DashboardScreen = () => {
   return (
-    <div>
-      <Dashboard component={<Chat/>}/>
-    </div>
-  )
-}
+    <DashboardLayout>
+      <Chat />
+    </DashboardLayout>
+  );
+};
 
-export default DashboardScreen
+export default DashboardScreen;

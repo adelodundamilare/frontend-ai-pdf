@@ -1,13 +1,13 @@
-import React from 'react'
-import UserProfile from '../../components/static/RightSide/Profile/UserProfile'
-import Dashboard from '../../components/dynamic/Dashboard/Dashboard'
+import React from "react";
+import UserProfile from "@/components/static/RightSide/Profile/UserProfile";
+import DashboardLayout from "@/layouts/dashboard-layout";
 
 const ProfileScreen = () => {
   return (
-    <>
-      <Dashboard component={<UserProfile/>}/>
-    </>
-  )
-}
+    <DashboardLayout>
+      <UserProfile />
+    </DashboardLayout>
+  );
+};
 
-export default ProfileScreen
+export default ProfileScreen;

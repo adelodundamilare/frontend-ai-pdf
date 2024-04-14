@@ -16,7 +16,7 @@ import PaymentInfo from './PaymentInfo';
 
 
 const PaymentPage = (props) => {
-  const stripePromise = loadStripe('pk_test_51JeDolGB4JYTbuOR1quYyXWaa0060OlApbeYRRIhOeNBK8DyqDNggLNv9FS5YD6Q3FOsIGCbxfLAVd5izxiPb5HQ00kMW1xXlm');
+  const stripePromise = loadStripe(process.env.VITE_STRIPE_KEY);
 
     const nav = useNavigate()
     const location = useLocation();
@@ -27,12 +27,12 @@ const PaymentPage = (props) => {
       // Add logic to handle PayPal payment
       console.log('Pay with PayPal clicked');
     };
-  
+
     const handleApplePayClick = () => {
       // Add logic to handle Google Pay payment
       console.log('Pay with Google Pay clicked');
     };
-  
+
     const convertCentsToDollars = (cents) => {
         return (cents / 100).toFixed(2); // Convert cents to dollars with two decimal places
       };
@@ -44,21 +44,21 @@ const PaymentPage = (props) => {
     console.log("OK Cliked", 'subscriptionId', subscriptionId)
     try {
       const response = await axios.post(`${BASE_URL}/payment/create_checkout_session/${subscriptionId}/`, {
-        pk: subscriptionId 
+        pk: subscriptionId
       });
-  
+
       // Handle the checkout session ID received from the backend
       const sessionId = response.data.id;
       console.log('Checkout session ID:', sessionId);
-  
+
       // Initialize Stripe with your public key
       const stripe = await loadStripe('pk_test_51JeDolGB4JYTbuOR1quYyXWaa0060OlApbeYRRIhOeNBK8DyqDNggLNv9FS5YD6Q3FOsIGCbxfLAVd5izxiPb5HQ00kMW1xXlm'); // Replace with your Stripe public key
-  
+
       // Redirect to Stripe Checkout
       const { error } = await stripe.redirectToCheckout({
         sessionId: sessionId
       });
-  
+
       if (error) {
         // Handle any redirection errors here
         console.error('Error redirecting to Checkout:', error);
@@ -86,21 +86,21 @@ const PaymentPage = (props) => {
 
 
 
-  
+
     return (
-     
+
     <div className='test'>
       <h1 className='text-center'>Select  Payment Method</h1>
        <PaymentInfo duration={duration} price={price} />
     <div>
 
-      
-   
+
+
     </div>
-    
+
     <div className="payment-container">
 
-    <p>Pay with</p> 
+    <p>Pay with</p>
 
 
         {/* <Elements stripe={stripePromise}> */}
@@ -112,15 +112,15 @@ const PaymentPage = (props) => {
         <br>
         </br>
         <div className="payment-buttons-container">
-         
-      
+
+
 
         <PayPalScriptProvider options={initialOptions}>
         <PayPalButtons
           style={{
             shape: "rect",
             layout: "vertical",
-           
+
           }}
           createOrder={(data, actions) => {
             return actions.order.create({
@@ -139,13 +139,13 @@ const PaymentPage = (props) => {
           }}
           onApprove={(data, actions) => {
             return actions.order.capture().then(function (details) {
-              console.log('Capture successful. Details:', details); 
+              console.log('Capture successful. Details:', details);
               toast.success('Payment completed. Thank you, ' + details.payer.name.given_name)
               // nav('/dashboard');
             });
           }}
           onCancel={() => toast(
-            "You cancelled the payment. Try again by clicking the PayPal button", 
+            "You cancelled the payment. Try again by clicking the PayPal button",
             {
               duration: 6000
             }
@@ -194,7 +194,7 @@ const PaymentPage = (props) => {
           // onApprove={async (data, actions) => {
           //   try {
           //     const response = await fetch(
-              
+
           //       `${BASE_URL}/payment/capture_order/${data.orderID}/`,
           //       {
           //         method: "POST",
@@ -250,17 +250,17 @@ const PaymentPage = (props) => {
 
 
 
-      
-          
+
+
           {/* <button className="payment-button google-pay" onClick={handleApplePayClick}>
             <span className="button-text">Pay with Apple Pay</span>
             <span className="icon google-icon"></span>
           </button> */}
-         
+
 
           {/* google pay */}
           <GooglePayButton
-        
+
         environment="TEST"
         paymentRequest={{
           apiVersion: 2,
@@ -315,8 +315,8 @@ const PaymentPage = (props) => {
 
 </div>
 
-      
-        
+
+
 
 </div>
 <button className="payment-button credit-card" onClick={() => handleCheckout(planId)} >
@@ -326,9 +326,9 @@ const PaymentPage = (props) => {
 
 
         </div>
-        
+
       </div>
     );
   };
-  
+
   export default PaymentPage;
