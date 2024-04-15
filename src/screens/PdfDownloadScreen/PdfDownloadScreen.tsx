@@ -1,12 +1,11 @@
 import UploadAndDownloadPdf from "../../components/dynamic/Pdf/UploadAndDownloadPdf";
 import DashboardLayout from "@/layouts/dashboard-layout";
-
-const PdfUploadScreen = () => {
+const PdfDownloadScreen = () => {
   return (
     <DashboardLayout>
-      <UploadAndDownloadPdf title={"Uploaded Files"} />
+      <UploadAndDownloadPdf title={"Downloaded Files"} />
     </DashboardLayout>
   );
 };
 
-export default PdfUploadScreen;
+export default PdfDownloadScreen;

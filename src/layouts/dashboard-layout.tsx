@@ -7,7 +7,10 @@ import EmailPopup from "@/components/dynamic/Popup/EmailPopup";
 import ForgotPopup from "@/components/dynamic/Popup/ForgotPopup";
 import SubscriptionPopup from "@/components/dynamic/Popup/SubscriptionPopup";
 
-const DashboardLayout = ({ children }) => {
+interface Prop {
+  children: React.ReactNode;
+}
+const DashboardLayout = ({ children }: Prop) => {
   const [showSubscriptionPopup, setshowSubscriptionPopup] = useState(false);
   const [showSideBar, setshowSideBar] = useState(false);
   const [showPopUp, setshowPopUp] = useState(false);
@@ -18,7 +21,7 @@ const DashboardLayout = ({ children }) => {
   return (
     <div className="flex items-start w-screen h-screen">
       <div className="lg:block hidden">
-        <Left />
+        <Left showSideBar={showSideBar} setshowSideBar={setshowSideBar} />
       </div>
       <div className="flex-1">
         <div className="w-[100%] h-screen font-roboto pt-4 pb-4 pl-3 pr-3 lg:pl-[1rem] lg:pr-[1rem] relative overflow-x-hidden overflow-y-auto">
@@ -48,12 +51,7 @@ const DashboardLayout = ({ children }) => {
         <div className=" absolute top-0 left-0 w-[100%] h-[100%] bg-black bg-opacity-50">
           <div className=" w-[100%] h-[100%] flex justify-center items-center opacity-100">
             <div className=" mt-auto mb-auto flex justify-center items-center opacity-100">
-              <LoginAndRegistrationPopup
-                setshowPopUp={setshowPopUp}
-                setisEmailPopup={setisEmailPopup}
-                isLogin={isLogin}
-                setisLogin={setisLogin}
-              />
+              <LoginAndRegistrationPopup />
             </div>
           </div>
         </div>
@@ -64,9 +62,8 @@ const DashboardLayout = ({ children }) => {
           <div className=" w-[100%] h-[100%] flex justify-center items-center opacity-100">
             <div className=" mt-auto mb-auto flex justify-center items-center opacity-100">
               <EmailPopup
-                setshowPopUp={setshowPopUp}
+                isForgotPopup={isForgotPopup}
                 setisForgotPopup={setisForgotPopup}
-                setisEmailPopup={setisEmailPopup}
                 isLogin={isLogin}
                 setisLogin={setisLogin}
               />
@@ -79,11 +76,7 @@ const DashboardLayout = ({ children }) => {
         <div className=" absolute top-0 left-0 w-[100%] h-[100%] bg-black bg-opacity-50">
           <div className=" w-[100%] h-[100%] flex justify-center items-center opacity-100">
             <div className=" mt-auto mb-auto flex justify-center items-center opacity-100">
-              <ForgotPopup
-                setshowPopUp={setshowPopUp}
-                setisForgotPopup={setisForgotPopup}
-                setisEmailPopup={setisEmailPopup}
-              />
+              <ForgotPopup shouldUpdate={true} />
             </div>
           </div>
         </div>
@@ -93,9 +86,7 @@ const DashboardLayout = ({ children }) => {
         <div className=" absolute top-0 left-0 w-[100%] h-[100%] bg-black bg-opacity-50">
           <div className=" w-[100%] h-[100%] flex justify-center items-center opacity-100">
             <div className=" mt-auto mb-auto flex justify-center items-center opacity-100">
-              <SubscriptionPopup
-                setshowSubscriptionPopup={setshowSubscriptionPopup}
-              />
+              <SubscriptionPopup />
             </div>
           </div>
         </div>

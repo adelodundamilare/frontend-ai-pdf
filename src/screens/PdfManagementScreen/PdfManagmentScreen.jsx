@@ -1,11 +1,10 @@
-import React from "react";
-import PdfManagment from "../../components/static/RightSide/PdfManagment/PdfManagment";
-import Dashboard from "../../components/dynamic/Dashboard/Dashboard";
+import PdfManagment from "@/components/static/RightSide/PdfManagment/PdfManagment";
+import DashboardLayout from "@/layouts/dashboard-layout";
 const PdfManagmentScreen = () => {
   return (
-    <>
-      <Dashboard component={<PdfManagment />} />
-    </>
+    <DashboardLayout>
+      <PdfManagment />
+    </DashboardLayout>
   );
 };
 
