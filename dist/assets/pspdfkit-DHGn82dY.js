@@ -1,4 +1,4 @@
-import{g as T4}from"./index-z0P5WfcZ.js";function A4(np,tm){for(var Qc=0;Qc<tm.length;Qc++){const Ws=tm[Qc];if(typeof Ws!="string"&&!Array.isArray(Ws)){for(const yl in Ws)if(yl!=="default"&&!(yl in np)){const Du=Object.getOwnPropertyDescriptor(Ws,yl);Du&&Object.defineProperty(np,yl,Du.get?Du:{enumerable:!0,get:()=>Ws[yl]})}}}return Object.freeze(Object.defineProperty(np,Symbol.toStringTag,{value:"Module"}))}var xy={exports:{}};/*!
+import{g as T4}from"./index-DN5SDhF_.js";function A4(np,tm){for(var Qc=0;Qc<tm.length;Qc++){const Ws=tm[Qc];if(typeof Ws!="string"&&!Array.isArray(Ws)){for(const yl in Ws)if(yl!=="default"&&!(yl in np)){const Du=Object.getOwnPropertyDescriptor(Ws,yl);Du&&Object.defineProperty(np,yl,Du.get?Du:{enumerable:!0,get:()=>Ws[yl]})}}}return Object.freeze(Object.defineProperty(np,Symbol.toStringTag,{value:"Module"}))}var xy={exports:{}};/*!
  * PSPDFKit for Web 2024.1.1 (https://pspdfkit.com/web)
  *
  * Copyright (c) 2016-2024 PSPDFKit GmbH. All rights reserved.
