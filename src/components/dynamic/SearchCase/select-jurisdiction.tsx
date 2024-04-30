@@ -25,5 +25,6 @@ const fetchData = async (
 // };
 
 export default () => (
-  <AsyncSelect cacheOptions loadOptions={fetchData} defaultOptions />
+  <></>
+  // <AsyncSelect cacheOptions loadOptions={fetchData} defaultOptions />
 );
