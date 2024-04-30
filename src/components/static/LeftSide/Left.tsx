@@ -14,7 +14,7 @@ import ProfileImage from "../../../assets/profile.png";
 import Logo from "../../../assets/logo1.png";
 
 import "./style.css";
-import { BiSolidDownArrow, BiSolidUpArrow } from "react-icons/bi";
+import { BiHomeCircle, BiSolidDownArrow, BiSolidUpArrow } from "react-icons/bi";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../../config/baseUrl";
@@ -99,6 +99,19 @@ const Left = ({ setshowSideBar, showSidebar }: any) => {
             <p className="tracking-wider text-[#FFF] text-sm">
               PDF Management Tools
             </p>
+          </div>
+
+          {/* SEARCH LINK  */}
+          <div
+            className="flex items-center gap-4 cursor-pointer mb-4 hover:bg-[#445662] p-2 rounded-md"
+            onClick={() => nav("/search-case")}
+          >
+            <img
+              src={SearchIcon}
+              alt="search-icon"
+              className="w-[1rem] h-[1rem]"
+            />
+            <p className="tracking-wider text-[#FFF]">Search Case</p>
           </div>
 
           {/* LIBRARY LINK AND IT'S SUB CATEGORIES LINK  */}

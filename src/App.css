@@ -214,3 +214,7 @@ body {
   margin: 20px; /* Adjust margin as needed */
   gap: 1rem;
 }
+
+p {
+  margin-bottom: 0 !important;
+}

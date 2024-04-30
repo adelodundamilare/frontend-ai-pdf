@@ -3,7 +3,7 @@ import Modal from "react-modal";
 import ProgressBar from "@ramonak/react-progress-bar";
 import { ColorRing } from "react-loader-spinner";
 
-const ProgressModal = ({ isLoading, isOpen, progress, closeModal }) => {
+const ProgressModal = ({ isLoading }) => {
   return (
     // <Modal
     //   isOpen={isOpen}

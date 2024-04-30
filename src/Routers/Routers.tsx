@@ -38,6 +38,8 @@ import LoginAndRegistrationPopup from "../components/dynamic/Popup/LoginAndRegis
 import SubscriptionPopup from "../components/dynamic/Popup/SubscriptionPopup";
 import PaymentPage from "../components/dynamic/Popup/Paymentpage";
 import ResetPassword from "../components/dynamic/Popup/ResetPassword";
+import SearchCaseScreen from "@/screens/SearchCaseScreen/SearchCaseScreen";
+import SearchCaseSingleScreen from "@/screens/SearchCaseScreen/SearchCaseSingleScreen";
 
 const Routers = () => {
   return (
@@ -106,7 +108,12 @@ const Routers = () => {
         <Route path="/login-route" element={<LoginAndRegistrationPopup />} />
         <Route path="/subscription" element={<SubscriptionPopup />} />
         <Route path="/select/payment" element={<PaymentPage />} />
-        <Route path="/accounts/password_reset/confirm/" element={<ResetPassword />} />
+        <Route
+          path="/accounts/password_reset/confirm/"
+          element={<ResetPassword />}
+        />
+        <Route path="/search-case" element={<SearchCaseScreen />} />
+        <Route path="/search-case/:id" element={<SearchCaseSingleScreen />} />
       </Routes>
     </>
   );
