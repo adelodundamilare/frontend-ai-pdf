@@ -87,7 +87,6 @@ const OrganizePdfContent = () => {
       });
 
       const fileUrl = response.data.organized_data.organize_pdf;
-      console.log({ fileUrl });
       setFileUrl(fileUrl);
 
       setIsButtonClicked(true);

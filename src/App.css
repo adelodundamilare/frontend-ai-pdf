@@ -218,3 +218,11 @@ body {
 p {
   margin-bottom: 0 !important;
 }
+
+.upload-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 12px;
+  top: 12px;
+}

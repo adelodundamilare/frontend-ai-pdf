@@ -1,9 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { useChat, Message } from "ai/react";
+import { useLocation } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import { Document, Page } from "react-pdf";
+import { toast } from "react-toastify";
 //
+import DragNDrop from "@/components/drag-n-drop";
 import SendIcon from "../../../../assets/send.svg";
+import UploadIcon from "../../../../assets/upload.svg";
 import ProfileImage from "../../../../assets/profile.png";
 import LikeIcon from "../../../../assets/like.svg";
 import DisLikeIcon from "../../../../assets/dislike.svg";
@@ -16,10 +20,19 @@ interface IMessage {
   role: string;
   content: string;
 }
-const Chat = () => {
+
+interface IPdfItem {
+  id: string;
+  pageNumber: number;
+  content: string;
+}
+const PdfSummarizer = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [input, setInput] = useState("");
-  const [activeTab, setActiveTab] = useState("default");
+  const location = useLocation();
+  const [pdfFile, setPdfFile] = useState<any>();
+  const [items, setItems] = useState<IPdfItem[]>([]);
+  const [numPages, setNumPages] = useState(0);
   const [loading, setLoading] = useState(false);
   // const { messages, input, handleInputChange, (e)=> } = useChat({
   //   api: `${import.meta.env.VITE_BACKEND_BASE_URL}/chat/open_ai/`,
@@ -62,17 +75,60 @@ const Chat = () => {
     });
   }, []);
 
+  const onDocumentLoadSuccess = ({ numPages }: any) => {
+    setNumPages(numPages);
+    const pdfItems = Array.from({ length: numPages }, (_, index) => ({
+      id: `page-${index + 1}`,
+      pageNumber: index + 1,
+      content: `Page ${index + 1}`,
+    }));
+    setItems(pdfItems);
+  };
+
+  const handleClick = async (event: any) => {
+    if (!event.target.files) {
+      toast.warn("Please select a PDF file.");
+      return;
+    }
+
+    setPdfFile(event.target.files[0]);
+  };
+
+  if (!pdfFile)
+    return (
+      <div className="grid place-content-center w-full h-full">
+        <DragNDrop handleClick={handleClick} />
+      </div>
+    );
+
   return (
     <>
-      <div className="bg-[#D9D9D9] w-[100%] h-[1px] mt-3"></div>
-
-      {/* MAIN CHAT SECTION  */}
+      <div className="flex overflow-hidden h-[83vh]">
+        <div className="p-1 gap-1 bg-gray-200 h-full overflow-y-auto">
+          <Document file={pdfFile} onLoadSuccess={onDocumentLoadSuccess}>
+            <div className="grid gap-1">
+              {items.map((item, index) => (
+                <div>
+                  <Page
+                    pageNumber={item?.pageNumber ?? 0}
+                    // pageNumber={index + 1}
+                    renderTextLayer={false}
+                    renderAnnotationLayer={false}
+                    width={250}
+                  />
+                </div>
+              ))}
+            </div>
+          </Document>
+        </div>
+        <div className="flex-grow grid place-content-center">hello</div>
+      </div>
 
       <div className="">
         {/* Div For User And Ai Response  */}
 
-        <div
-          className="h-[60vh] pl-[2rem] pr-[2rem] overflow-y-auto scrollToBottom pb-[2rem] md:pb-[2rem]"
+        {/* <div
+          className="pl-[2rem] pr-[2rem] overflow-y-auto scrollToBottom pb-[2rem] md:pb-[2rem]"
           ref={chatContainer}
         >
           {messages.map((m: IMessage, index: any) => {
@@ -109,48 +165,13 @@ const Chat = () => {
             //   </li>
             // );
           })}
-        </div>
-
-        {/* Div For Input  */}
-        <form
-          onSubmit={handleSubmit}
-          className="absolute bottom-[3rem] w-[100%]"
-        >
-          <div className="relative sm:w-[96%] w-[95%] flex justify-center items-center">
-            <textarea
-              style={{ border: "1px solid #D9D9D9", maxHeight: "10rem" }}
-              placeholder="[ Write a note ]"
-              value={loading ? "Loading, please wait..." : input}
-              onChange={handleInputChange}
-              className="w-[100%]  h-fit min-w-fit relative resize-none pt-[1rem] pb-[1rem] pl-[2rem] pr-[5rem] text-lg tracking-wider  plaholder:text-[#303030] outline-none rounded-[1rem] shadow-ChatBoxShadown"
-              onInput={(e: any) => {
-                e.target.style.height = "auto";
-                e.target.style.height = e.target.scrollHeight + "px";
-              }}
-            />
-            <button type="submit">
-              <img
-                src={SendIcon}
-                alt=""
-                className="absolute lg:right-[5%] right-[4rem]  top-[40%] cursor-pointer"
-              />
-            </button>
-          </div>
-        </form>
-
-        {/* DIV FOR SMALL QUESTION MARK LOGO */}
-        <div className="absolute bottom-[10px] float-right flex justify-end mr-[10rem] w-[96%]">
-          <div className="w-[1.3rem] h-[1.3rem] rounded-full flex justify-center items-center bg-[#36454F]">
-            <img src={QuestionIcon} alt="" />
-          </div>
-          {/* #36454F */}
-        </div>
+        </div> */}
       </div>
     </>
   );
 };
 
-export default Chat;
+export default PdfSummarizer;
 
 const UserRes = ({ message }: IChatResponse) => {
   return (
