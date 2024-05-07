@@ -1,13 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import { Document, Page } from "react-pdf";
 import { toast } from "react-toastify";
 //
 import DragNDrop from "@/components/drag-n-drop";
-import SendIcon from "../../../../assets/send.svg";
-import UploadIcon from "../../../../assets/upload.svg";
 import ProfileImage from "../../../../assets/profile.png";
 import LikeIcon from "../../../../assets/like.svg";
 import DisLikeIcon from "../../../../assets/dislike.svg";
@@ -15,6 +12,7 @@ import EditIcon from "../../../../assets/edit.svg";
 import CopyIcon from "../../../../assets/copy.svg";
 import QuestionIcon from "../../../../assets/question.png";
 import { authRequest } from "@/config/baseUrl";
+import ProgressModal from "@/components/Progress";
 
 interface IMessage {
   role: string;
@@ -27,44 +25,11 @@ interface IPdfItem {
   content: string;
 }
 const PdfSummarizer = () => {
-  const [messages, setMessages] = useState<IMessage[]>([]);
-  const [input, setInput] = useState("");
-  const location = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
+  const [result, setResult] = useState("");
   const [pdfFile, setPdfFile] = useState<any>();
   const [items, setItems] = useState<IPdfItem[]>([]);
   const [numPages, setNumPages] = useState(0);
-  const [loading, setLoading] = useState(false);
-  // const { messages, input, handleInputChange, (e)=> } = useChat({
-  //   api: `${import.meta.env.VITE_BACKEND_BASE_URL}/chat/open_ai/`,
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //     Authorization: `Token ${localStorage.getItem("token")}`,
-  //   },
-  // });
-  const handleSubmit = async (e: any) => {
-    try {
-      setLoading(true);
-      e.preventDefault();
-      if (!input) return;
-      persistMessage({ role: "user", content: input });
-      const res = await authRequest.post("/chat/open_ai/", { prompt: input });
-      setInput("");
-      persistMessage(res?.data?.data);
-    } catch (error) {
-      console.log({ error });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const persistMessage = async (message: IMessage) => {
-    setMessages((x) => [...x, message]);
-    // @todo: persist message to store...
-  };
-
-  const handleInputChange = (e: any) => {
-    setInput(e.target.value);
-  };
 
   const chatContainer = useRef<HTMLDivElement>(null);
 
@@ -91,20 +56,42 @@ const PdfSummarizer = () => {
       return;
     }
 
-    setPdfFile(event.target.files[0]);
+    const pdf = event.target.files[0];
+    setPdfFile(pdf);
+    await summarizePdf(pdf);
   };
 
-  if (!pdfFile)
-    return (
-      <div className="grid place-content-center w-full h-full">
-        <DragNDrop handleClick={handleClick} />
-      </div>
-    );
+  const summarizePdf = async (pdf: any) => {
+    const formData = new FormData();
+    formData.append("input_pdf", pdf);
+
+    try {
+      setIsLoading(true);
+      const response = await authRequest.post("/pdf/summarize_pdf/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const res = response.data.data;
+      setResult(res);
+
+      setIsLoading(false);
+    } catch (error: any) {
+      setIsLoading(false);
+      toast.error(error?.response.data.error);
+      console.error("Error summarizing pdf:", error);
+    }
+  };
+
+  if (!pdfFile || !result) return <DragNDrop handleClick={handleClick} />;
+
+  if (isLoading) return <ProgressModal isLoading={isLoading} />;
 
   return (
     <>
-      <div className="flex overflow-hidden h-[83vh]">
-        <div className="p-1 gap-1 bg-gray-200 h-full overflow-y-auto">
+      <div className="flex gap-3 overflow-hidden h-[83vh]">
+        <div className="p-1 flex-shrink-0 gap-1 bg-gray-200 h-full overflow-y-auto">
           <Document file={pdfFile} onLoadSuccess={onDocumentLoadSuccess}>
             <div className="grid gap-1">
               {items.map((item, index) => (
@@ -121,7 +108,13 @@ const PdfSummarizer = () => {
             </div>
           </Document>
         </div>
-        <div className="flex-grow grid place-content-center">hello</div>
+        <div className="flex-grow overflow-y-auto">
+          <ReactMarkdown
+            className="text-sm markup"
+            children={result}
+            rehypePlugins={[rehypeRaw]}
+          />
+        </div>
       </div>
 
       <div className="">
