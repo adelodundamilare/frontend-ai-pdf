@@ -14,11 +14,10 @@ import ProfileImage from "../../../assets/profile.png";
 import Logo from "../../../assets/logo1.png";
 
 import "./style.css";
-import { BiHomeCircle, BiSolidDownArrow, BiSolidUpArrow } from "react-icons/bi";
+import { authRequest } from "@/config/baseUrl";
+import { BiSolidDownArrow, BiSolidUpArrow } from "react-icons/bi";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
-import { BASE_URL } from "../../../config/baseUrl";
-import axios from "axios";
 // import SubscriptionPopup from './../../dynamic/Popup/SubscriptionPopup'
 
 const Left = ({ setshowSideBar, showSidebar }: any) => {
@@ -32,18 +31,15 @@ const Left = ({ setshowSideBar, showSidebar }: any) => {
   const nav = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-
     const get_user_profile = async () => {
-      const profileResponse = await axios.get(`${BASE_URL}/accounts/profile/`, {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      });
+      const profileResponse = await authRequest.get("/accounts/profile/");
 
-      const userProfile1 = profileResponse.data;
-      const username = userProfile1[0].email;
+      const userProfile1 = profileResponse.data.data;
+
+      const username = userProfile1.email;
       setUsername(username);
+
+      localStorage.setItem("lawtabby_user", JSON.stringify(userProfile1));
     };
 
     get_user_profile();

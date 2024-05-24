@@ -84,3 +84,10 @@ export interface ICaseData {
   last_updated: string;
   provenance: Provenance;
 }
+
+export interface IProfile {
+  "id": number,
+  "name": string,
+  "avatar": string,
+  "email": string
+}

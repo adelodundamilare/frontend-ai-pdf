@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import OnBoardingScreen from "../screens/OnBoardingScreen/OnBoardingScreen";
 import DashboardScreen from "../screens/DashboardScreen/DashboardScreen";
 import ProfileScreen from "../screens/ProfileScreen/ProfileScreen";
@@ -40,80 +40,118 @@ import PaymentPage from "../components/dynamic/Popup/Paymentpage";
 import ResetPassword from "../components/dynamic/Popup/ResetPassword";
 import SearchCaseScreen from "@/screens/SearchCaseScreen/SearchCaseScreen";
 import SearchCaseSingleScreen from "@/screens/SearchCaseScreen/SearchCaseSingleScreen";
+import NotFoundScreen from "@/screens/NotFoundScreen";
+import { isAuthenticated } from "@/constants/helpers";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 const Routers = () => {
   return (
     <>
       <ToastContainer />
       <Routes>
-        <Route path="/" element={<OnBoardingScreen />} />
-        <Route path="/dashboard" element={<DashboardScreen />} />
-        <Route path="/profile" element={<ProfileScreen />} />
-        <Route path="/pdf/tool" element={<PdfManagmentScreen />} />
-        <Route path="/pdf/upload" element={<PdfUploadScreen />} />
-        <Route path="/pdf/download" element={<PdfDownloadScreen />} />
-
-        <Route path="/pdf/merge" element={<MergePdfScreen />} />
-        <Route path="/pdf/merge/content" element={<MergePdfContentScreen />} />
-
-        <Route path="/pdf/split" element={<SplitPdfScreen />} />
-        <Route path="/pdf/split/content" element={<SplitPdfContentScreen />} />
-
-        <Route path="/pdf/compress" element={<CompressPdfScreen />} />
         <Route
-          path="/pdf/compress/content"
-          element={<CompressPdfContentScreen />}
+          path="/"
+          element={
+            isAuthenticated() ? (
+              <Navigate to="/dashboard" />
+            ) : (
+              <OnBoardingScreen />
+            )
+          }
+        />
+        <Route
+          path="/login-route"
+          element={
+            isAuthenticated() ? (
+              <Navigate to="/dashboard" />
+            ) : (
+              <LoginAndRegistrationPopup />
+            )
+          }
         />
 
-        <Route path="/pdf/organize" element={<OrganizePdfScreen />} />
         <Route
-          path="/pdf/organize/content"
-          element={<OrganizePdfContentScreen />}
-        />
+          element={
+            <ProtectedRoute redirectPath="/" isAuth={isAuthenticated()} />
+          }
+        >
+          <Route path="/dashboard" element={<DashboardScreen />} />
+          <Route path="/profile" element={<ProfileScreen />} />
+          <Route path="/pdf/tool" element={<PdfManagmentScreen />} />
+          <Route path="/pdf/upload" element={<PdfUploadScreen />} />
+          <Route path="/pdf/download" element={<PdfDownloadScreen />} />
 
-        <Route path="/pdf/stamp" element={<StampPdfScreen />} />
-        <Route path="/pdf/stamp/content" element={<StampPdfContentScreen />} />
+          <Route path="/pdf/merge" element={<MergePdfScreen />} />
+          <Route
+            path="/pdf/merge/content"
+            element={<MergePdfContentScreen />}
+          />
 
-        <Route path="/pdf/edit" element={<EditPdfScreen />} />
-        <Route path="/pdf/edit/content" element={<EditPdfContentScreen />} />
+          <Route path="/pdf/split" element={<SplitPdfScreen />} />
+          <Route
+            path="/pdf/split/content"
+            element={<SplitPdfContentScreen />}
+          />
 
-        <Route path="/pdf/sign" element={<SignPdfScreen />} />
-        <Route path="/pdf/sign/content" element={<SignPdfContentScreen />} />
+          <Route path="/pdf/compress" element={<CompressPdfScreen />} />
+          <Route
+            path="/pdf/compress/content"
+            element={<CompressPdfContentScreen />}
+          />
 
-        <Route path="/pdf/OCR/content" element={<OCRPdfContentScreen />} />
-        <Route path="/pdf/OCR" element={<OCRPdfScreen />} />
+          <Route path="/pdf/organize" element={<OrganizePdfScreen />} />
+          <Route
+            path="/pdf/organize/content"
+            element={<OrganizePdfContentScreen />}
+          />
 
-        <Route path="/pdf/protect" element={<ProtectPdfScreen />} />
-        <Route
-          path="/pdf/protect/content"
-          element={<ProtectPdfContentScreen />}
-        />
+          <Route path="/pdf/stamp" element={<StampPdfScreen />} />
+          <Route
+            path="/pdf/stamp/content"
+            element={<StampPdfContentScreen />}
+          />
 
-        <Route path="/pdf/unlock" element={<UnlockPdfScreen />} />
-        <Route
-          path="/pdf/unlock/content"
-          element={<UnlockPdfContentScreen />}
-        />
-        <Route path="/pdf/to/other" element={<PdfToOtherScreen />} />
-        <Route
-          path="/pdf/to/other/content"
-          element={<PdfToOtherContentScreen />}
-        />
+          <Route path="/pdf/edit" element={<EditPdfScreen />} />
+          <Route path="/pdf/edit/content" element={<EditPdfContentScreen />} />
 
-        <Route path="/pdf/other/to/pdf" element={<OtherToPdfScreen />} />
-        <Route
-          path="/pdf/other/to/pdf/content"
-          element={<OthersToPdfContentScreen />}
-        />
-        <Route path="/login-route" element={<LoginAndRegistrationPopup />} />
-        <Route path="/subscription" element={<SubscriptionPopup />} />
-        <Route path="/select/payment" element={<PaymentPage />} />
-        <Route
-          path="/accounts/password_reset/confirm/"
-          element={<ResetPassword />}
-        />
-        <Route path="/search-case" element={<SearchCaseScreen />} />
-        <Route path="/search-case/:id" element={<SearchCaseSingleScreen />} />
+          <Route path="/pdf/sign" element={<SignPdfScreen />} />
+          <Route path="/pdf/sign/content" element={<SignPdfContentScreen />} />
+
+          <Route path="/pdf/OCR/content" element={<OCRPdfContentScreen />} />
+          <Route path="/pdf/OCR" element={<OCRPdfScreen />} />
+
+          <Route path="/pdf/protect" element={<ProtectPdfScreen />} />
+          <Route
+            path="/pdf/protect/content"
+            element={<ProtectPdfContentScreen />}
+          />
+
+          <Route path="/pdf/unlock" element={<UnlockPdfScreen />} />
+          <Route
+            path="/pdf/unlock/content"
+            element={<UnlockPdfContentScreen />}
+          />
+          <Route path="/pdf/to/other" element={<PdfToOtherScreen />} />
+          <Route
+            path="/pdf/to/other/content"
+            element={<PdfToOtherContentScreen />}
+          />
+
+          <Route path="/pdf/other/to/pdf" element={<OtherToPdfScreen />} />
+          <Route
+            path="/pdf/other/to/pdf/content"
+            element={<OthersToPdfContentScreen />}
+          />
+          <Route path="/subscription" element={<SubscriptionPopup />} />
+          <Route path="/select/payment" element={<PaymentPage />} />
+          <Route
+            path="/accounts/password_reset/confirm/"
+            element={<ResetPassword />}
+          />
+          <Route path="/search-case" element={<SearchCaseScreen />} />
+          <Route path="/search-case/:id" element={<SearchCaseSingleScreen />} />
+        </Route>
+        <Route path="*" element={<NotFoundScreen />} />
       </Routes>
     </>
   );

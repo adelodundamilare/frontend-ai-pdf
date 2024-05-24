@@ -6,10 +6,19 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import GoogleLoginButton from "./GoogleLoginButton";
 
 function GoogleLogin() {
+  const responseMessage = (response: any) => {
+    console.log(response);
+  };
+  const errorMessage = (error: any) => {
+    console.log(error);
+  };
+
   return (
     <div className="App">
-      <GoogleOAuthProvider clientId="28123279459-4cvinnj0ujpm46b97f1jecefh75jn876.apps.googleusercontent.com">
-        <GoogleLoginButton />
+      <GoogleOAuthProvider
+        clientId={import.meta.env.VITE_GOOGLE_LOGIN_CLIENT_ID}
+      >
+        <GoogleLoginButton onSuccess={responseMessage} onError={errorMessage} />
       </GoogleOAuthProvider>
     </div>
   );

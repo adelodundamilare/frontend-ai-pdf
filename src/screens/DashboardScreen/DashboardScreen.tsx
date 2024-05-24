@@ -1,10 +1,11 @@
+import { useState } from "react";
 import Chat from "@/components/static/RightSide/Chat/Chat";
 import PdfSummarizer from "@/components/static/RightSide/PdfSummarizer/PdfSummarizer";
 import DashboardLayout from "@/layouts/dashboard-layout";
-import { useState } from "react";
 
 const DashboardScreen = () => {
   const [activeTab, setActiveTab] = useState("default");
+
   return (
     <DashboardLayout>
       <div className="flex justify-center items-center">

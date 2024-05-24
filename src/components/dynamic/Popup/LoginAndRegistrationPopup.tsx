@@ -34,14 +34,15 @@ const LoginAndRegistrationPopup = () => {
     setisEmailPopup(true);
     // setshowPopUp(false);
   };
-  const handleGoogleLoginSuccess = (tokens) => {
-    // Handle successful Google login, e.g., save tokens to state or local storage
-    console.log("Google login successful:", tokens);
 
-    // Redirect to the dashboard page
-    navigate("/dashboard"); // Replace '/dashboard' with your actual dashboard route
+  const handleGoogleLoginSuccess = (tokens: any) => {
+    navigate("/dashboard");
+    window.location.reload();
   };
 
+  const errorMessage = (error: any) => {
+    console.log(error);
+  };
   // const handleMicrosoftLoginSuccess = (response) => {
   //   // Handle successful Microsoft login, e.g., save tokens to state or local storage
   //   console.log('Microsoft login successful:', response);
@@ -78,8 +79,13 @@ const LoginAndRegistrationPopup = () => {
          <img src={GoogleIcon} alt="" />
          <p>Continue With Google</p>
        </div> */}
-              <GoogleOAuthProvider clientId="28123279459-4cvinnj0ujpm46b97f1jecefh75jn876.apps.googleusercontent.com">
-                <GoogleLoginButton onSuccess={handleGoogleLoginSuccess} />
+              <GoogleOAuthProvider
+                clientId={import.meta.env.VITE_GOOGLE_LOGIN_CLIENT_ID}
+              >
+                <GoogleLoginButton
+                  onSuccess={handleGoogleLoginSuccess}
+                  onError={errorMessage}
+                />
               </GoogleOAuthProvider>
 
               <div
