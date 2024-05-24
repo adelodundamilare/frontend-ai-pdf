@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { GiHamburgerMenu } from "react-icons/gi";
+import { Link, useNavigate } from "react-router-dom";
 //
-import Left from "../../LeftSide/Left";
 import BigProfileImage from "../../../../assets/bigProfile.png";
 import SettingIcon from "../../../../assets/bsetting.svg";
 import EditIcon from "../../../../assets/edit.svg";
@@ -10,10 +8,15 @@ import ArrowIcon from "../../../../assets/carrow2.svg";
 import QuestionIcon from "../../../../assets/question.png";
 import { authRequest } from "@/config/baseUrl";
 import { IProfile } from "@/lib/types";
+import UpdateNamePopup from "@/components/dynamic/Popup/UpdateNamePopup";
+import ProgressModal from "@/components/Progress";
+import UpdateAvatarPopup from "@/components/dynamic/Popup/UpdateAvatarPopup";
 
 const UserProfile = () => {
-  const [showSideBar, setshowSideBar] = useState(false);
   const [userProfile, setUserProfile] = useState<IProfile>();
+  const [updateNamePopup, setUpdateNamePopup] = useState(false);
+  const [updateAvatarPopup, setUpdateAvatarPopup] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigateTo = useNavigate();
 
@@ -26,32 +29,28 @@ const UserProfile = () => {
   };
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const response = await authRequest.get("/accounts/profile/");
-        // Update the user profile state with the response data
-        setUserProfile(response.data.data);
-      } catch (error) {
-        // Handle error, such as redirecting to the login page if the token is invalid
-        console.error("Error fetching user profile:", error);
-      }
-    };
-
-    // Call the fetchUserProfile function when the component mounts
     fetchUserProfile();
   }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      setIsLoading(true);
+      const response = await authRequest.get("/accounts/profile/");
+      setUserProfile(response.data.data);
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) {
+    return <ProgressModal isLoading={isLoading} />;
+  }
 
   return (
     <div className="relative">
       <div className="flex-1 font-roboto h-screen overflow-y-auto pt-3 pb-5">
-        {/* HAMBURGER MENU  */}
-        <div className="ml-3 lg:hidden block">
-          <GiHamburgerMenu
-            className="text-2xl cursor-pointer"
-            onClick={() => setshowSideBar(!showSideBar)}
-          />
-        </div>
-
         {/* SETTINGS HEADING DIV AND LINE  */}
 
         <div className="flex justify-center w-[100%] items-center">
@@ -76,7 +75,7 @@ const UserProfile = () => {
 
               {/* PROFILE INFO  */}
               <div className="w-[100%] bg-[#F5F5F5] p-3 mt-3 rounded-md ">
-                {/* APPERANCE  */}
+                {/* APPEARANCE  */}
                 <div className="flex justify-between items-center">
                   <div>
                     <p>Appearance</p>
@@ -97,12 +96,18 @@ const UserProfile = () => {
                     <p>Avatar</p>
                   </div>
 
-                  <div className="relative">
-                    <img src={BigProfileImage} alt="" />
-                    <div className="absolute -bottom-2 -right-1 cursor-pointer w-[2rem] h-[2rem] rounded-full bg-[#D9D9D9] flex justify-center items-center">
-                      <img src={EditIcon} alt="" />
+                  <button onClick={() => setUpdateAvatarPopup(true)}>
+                    <div className="relative">
+                      <img
+                        src={userProfile?.avatar ?? BigProfileImage}
+                        alt=""
+                        className="w-[70px] h-[70px] object-cover rounded-md"
+                      />
+                      <div className="absolute -bottom-2 -right-1 cursor-pointer w-[2rem] h-[2rem] rounded-full bg-[#D9D9D9] flex justify-center items-center">
+                        <img src={EditIcon} alt="" />
+                      </div>
                     </div>
-                  </div>
+                  </button>
                 </div>
 
                 {/* LINE TAG  */}
@@ -119,7 +124,13 @@ const UserProfile = () => {
                         {userProfile?.name || userProfile?.email.split("@")[0]}
                       </p>
 
-                      <img src={EditIcon} alt="" className=" cursor-pointer" />
+                      <button onClick={() => setUpdateNamePopup(true)}>
+                        <img
+                          src={EditIcon}
+                          alt=""
+                          className=" cursor-pointer"
+                        />
+                      </button>
                     </div>
                   </div>
 
@@ -167,10 +178,12 @@ const UserProfile = () => {
                   <div>
                     <p>Subscription</p>
                   </div>
-                  <div className="flex gap-2 bg-[#E8E8E3] p-1 rounded-sm cursor-pointer">
-                    <img src={ArrowIcon} alt="" />
-                    <p>Learn More</p>
-                  </div>
+                  <Link to="/subscription">
+                    <div className="flex gap-2 bg-[#E8E8E3] p-1 rounded-sm cursor-pointer">
+                      <img src={ArrowIcon} alt="" />
+                      <p>Learn More</p>
+                    </div>
+                  </Link>
                 </div>
 
                 <div className="w-[100%] h-[1px] bg-[#D9D9D9] mt-3"></div>
@@ -195,10 +208,35 @@ const UserProfile = () => {
         {/* #36454F */}
       </div>
 
-      {/* RESPONSIVE SIDE BAR COMPONENT  */}
-      {showSideBar && (
-        <div className="lg:hidden block absolute top-0 left-0">
-          <Left showSideBar={showSideBar} setshowSideBar={setshowSideBar} />
+      {updateNamePopup && (
+        <div className=" absolute top-0 left-0 w-[100%] h-[100%] bg-black bg-opacity-50">
+          <div className=" w-[100%] h-[100%] flex justify-center items-center opacity-100">
+            <div className=" mt-auto mb-auto flex justify-center items-center opacity-100">
+              <UpdateNamePopup
+                closeFunc={() => setUpdateNamePopup(false)}
+                callback={() => {
+                  setUpdateNamePopup(false);
+                  fetchUserProfile();
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {updateAvatarPopup && (
+        <div className=" absolute top-0 left-0 w-[100%] h-[100%] bg-black bg-opacity-50">
+          <div className=" w-[100%] h-[100%] flex justify-center items-center opacity-100">
+            <div className=" mt-auto mb-auto flex justify-center items-center opacity-100">
+              <UpdateAvatarPopup
+                closeFunc={() => setUpdateAvatarPopup(false)}
+                callback={() => {
+                  setUpdateAvatarPopup(false);
+                  fetchUserProfile();
+                }}
+              />
+            </div>
+          </div>
         </div>
       )}
     </div>

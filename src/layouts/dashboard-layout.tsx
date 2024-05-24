@@ -24,7 +24,7 @@ const DashboardLayout = ({ children }: Prop) => {
         <Left showSideBar={showSideBar} setshowSideBar={setshowSideBar} />
       </div>
       <div className="flex-1">
-        <div className="w-[100%] h-screen font-roboto pt-4 pb-4 pl-3 pr-3 lg:pl-[1rem] lg:pr-[1rem] relative overflow-x-hidden overflow-y-auto">
+        <div className="w-[100%] h-screen font-roboto pb-4 pl-3 pr-3 lg:pl-[1rem] lg:pr-[1rem] relative overflow-x-hidden overflow-y-auto">
           <div>
             {/* HAMBURGER MENU  */}
             <div className="block absolute top-3 left-4 lg:hidden">

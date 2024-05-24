@@ -18,11 +18,11 @@ import { authRequest } from "@/config/baseUrl";
 import { BiSolidDownArrow, BiSolidUpArrow } from "react-icons/bi";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
+import { IProfile } from "@/lib/types";
 // import SubscriptionPopup from './../../dynamic/Popup/SubscriptionPopup'
 
 const Left = ({ setshowSideBar, showSidebar }: any) => {
-  const [userProfile, setUserProfile] = useState([]);
-  const [username, setUsername] = useState("");
+  const [user, setUser] = useState<IProfile>();
   // const [showSubscriptionPopup, setshowSubscriptionPopup] = useState(false)
 
   const [showLibrary, setshowLibrary] = useState(false);
@@ -36,8 +36,7 @@ const Left = ({ setshowSideBar, showSidebar }: any) => {
 
       const userProfile1 = profileResponse.data.data;
 
-      const username = userProfile1.email;
-      setUsername(username);
+      setUser(userProfile1);
 
       localStorage.setItem("lawtabby_user", JSON.stringify(userProfile1));
     };
@@ -268,13 +267,13 @@ const Left = ({ setshowSideBar, showSidebar }: any) => {
             >
               <div className="flex items-center gap-2">
                 <img
-                  src={ProfileImage}
+                  src={user?.avatar ?? ProfileImage}
                   alt=""
-                  className=""
+                  className="w-[50px] h-[50px] object-cover rounded-md"
                   onClick={() => nav("/profile")}
                 />
                 <p className="text-sm ellipsis-text2 w-[6rem]">
-                  {username ? username.split("@")[0] : "Guest"}
+                  {user?.name ? user?.email.split("@")[0] : "Guest"}
                 </p>
               </div>
 

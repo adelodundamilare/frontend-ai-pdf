@@ -132,7 +132,7 @@ const LoginAndRegistrationPopup = () => {
               onClick={handleContinue}
             >
               <button className="p-2 w-[19rem] rounded-md text-white bg-[#20808D] tracking-wider">
-                {isLogin ? "Continue" : "Continue"}
+                Continue
               </button>
             </div>
 

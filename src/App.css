@@ -241,3 +241,8 @@ p {
   font-size: 1.1rem;
   margin-top: 1rem;
 }
+
+a {
+  color: inherit !important;
+  text-decoration: none !important;
+}
