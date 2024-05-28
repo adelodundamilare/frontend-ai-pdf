@@ -5,12 +5,12 @@ import { Document, Page } from "react-pdf";
 import { toast } from "react-toastify";
 //
 import DragNDrop from "@/components/drag-n-drop";
-import ProfileImage from "../../../../assets/profile.png";
-import LikeIcon from "../../../../assets/like.svg";
-import DisLikeIcon from "../../../../assets/dislike.svg";
-import EditIcon from "../../../../assets/edit.svg";
-import CopyIcon from "../../../../assets/copy.svg";
-import QuestionIcon from "../../../../assets/question.png";
+import ProfileImage from "@/assets/profile.png";
+import LikeIcon from "@/assets/like.svg";
+import DisLikeIcon from "@/assets/dislike.svg";
+import EditIcon from "@/assets/edit.svg";
+import CopyIcon from "@/assets/copy.svg";
+import QuestionIcon from "@/assets/question.png";
 import { authRequest } from "@/config/baseUrl";
 import ProgressModal from "@/components/Progress";
 

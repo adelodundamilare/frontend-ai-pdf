@@ -3,13 +3,13 @@ import { useChat, Message } from "ai/react";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 //
-import SendIcon from "../../../../assets/send.svg";
-import ProfileImage from "../../../../assets/profile.png";
-import LikeIcon from "../../../../assets/like.svg";
-import DisLikeIcon from "../../../../assets/dislike.svg";
-import EditIcon from "../../../../assets/edit.svg";
-import CopyIcon from "../../../../assets/copy.svg";
-import QuestionIcon from "../../../../assets/question.png";
+import SendIcon from "@/assets/send.svg";
+import ProfileImage from "@/assets/profile.png";
+import LikeIcon from "@/assets/like.svg";
+import DisLikeIcon from "@/assets/dislike.svg";
+import EditIcon from "@/assets/edit.svg";
+import CopyIcon from "@/assets/copy.svg";
+import QuestionIcon from "@/assets/question.png";
 import { authRequest } from "@/config/baseUrl";
 
 interface IMessage {

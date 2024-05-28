@@ -86,8 +86,14 @@ export interface ICaseData {
 }
 
 export interface IProfile {
-  "id": number,
-  "name": string,
-  "avatar": string,
-  "email": string
+  id: number;
+  name: string;
+  avatar: string;
+  email: string;
+}
+
+export enum EnumAiChat {
+  default,
+  summarizer,
+  note_summarizer,
 }
