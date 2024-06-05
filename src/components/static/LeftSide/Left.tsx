@@ -110,7 +110,7 @@ const Left = ({ setshowSideBar, showSidebar }: any) => {
           </div>
 
           {/* LIBRARY LINK AND IT'S SUB CATEGORIES LINK  */}
-          <div className="flex justify-between items-center cursor-pointer mb-3 hover:bg-[#445662] p-2 rounded-md">
+          {/* <div className="flex justify-between items-center cursor-pointer mb-3 hover:bg-[#445662] p-2 rounded-md">
             <div className="flex items-center gap-4">
               <img
                 src={LibraryIcon}
@@ -133,15 +133,13 @@ const Left = ({ setshowSideBar, showSidebar }: any) => {
                 />
               )}
             </div>
-          </div>
+          </div> */}
 
           {/* SUB LIBRARY CATEGORIES LINK  */}
-          <div className="mb-4">
+          {/* <div className="mb-4">
             {showLibrary ? (
               <div className="flex gap-6 items-center">
-                {/* LEFT LINE  */}
                 <div className="w-[1px] h-[4rem] bg-[#D8D8CF99]"></div>
-                {/* MAIN CONTENT  */}
                 <div>
                   <p
                     onClick={() => nav("/pdf/upload")}
@@ -158,11 +156,11 @@ const Left = ({ setshowSideBar, showSidebar }: any) => {
                 </div>
               </div>
             ) : null}
-          </div>
+          </div> */}
 
           {/* HISTORY LINK AND IT'S SUB CATEGORIES LINK  */}
 
-          <div className="flex justify-between items-center cursor-pointer mb-3 hover:bg-[#445662] p-2 rounded-md">
+          {/* <div className="flex justify-between items-center cursor-pointer mb-3 hover:bg-[#445662] p-2 rounded-md">
             <div className="flex items-center gap-4">
               <img
                 src={HistoryIcon}
@@ -185,17 +183,16 @@ const Left = ({ setshowSideBar, showSidebar }: any) => {
                 />
               )}
             </div>
-          </div>
+          </div> */}
 
           {/* SUB HISTORY CATEGORIES LINK  */}
-          {showHistory ? (
+          {/* {showHistory ? (
             <div
               className={`${
                 showHistory && showLibrary ? "h-[3rem]" : "h-[10rem]"
               } overflow-scroll`}
             >
               <div className="ml-5 mb-4">
-                {/* MAIN SERACH LIST  */}
                 {arr?.map((item, index) => {
                   return (
                     <div key={index + item}>
@@ -228,7 +225,7 @@ const Left = ({ setshowSideBar, showSidebar }: any) => {
                 })}
               </div>
             </div>
-          ) : null}
+          ) : null} */}
 
           {/* FOOTER  */}
 
@@ -237,7 +234,7 @@ const Left = ({ setshowSideBar, showSidebar }: any) => {
 
             <div className="w-[100%] h-[1px] bg-[#D8D8CF99]"></div>
 
-            <h1>Try Pro</h1>
+            <h5 className="mt-2">Try Pro</h5>
             <p className="text-sm  w-[13rem]">
               Upgrade to upload more files and download PDF edits.
             </p>
