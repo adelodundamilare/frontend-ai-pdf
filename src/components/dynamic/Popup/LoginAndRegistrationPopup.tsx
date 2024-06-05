@@ -24,6 +24,12 @@ const LoginAndRegistrationPopup = () => {
   const [isEmailPopup, setisEmailPopup] = useState(false);
   const [isForgotPopup, setisForgotPopup] = useState(false);
 
+  const googleClientId =
+    import.meta.env.VITE_GOOGLE_LOGIN_CLIENT_ID ??
+    "1072214413217-1n4lqqiufr1kdratjifcsk3eu642nu1e.apps.googleusercontent.com";
+
+  // console.log({googleClientId})
+
   const navigate = useNavigate();
 
   // const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -79,9 +85,7 @@ const LoginAndRegistrationPopup = () => {
          <img src={GoogleIcon} alt="" />
          <p>Continue With Google</p>
        </div> */}
-              <GoogleOAuthProvider
-                clientId={import.meta.env.VITE_GOOGLE_LOGIN_CLIENT_ID}
-              >
+              <GoogleOAuthProvider clientId={googleClientId}>
                 <GoogleLoginButton
                   onSuccess={handleGoogleLoginSuccess}
                   onError={errorMessage}
