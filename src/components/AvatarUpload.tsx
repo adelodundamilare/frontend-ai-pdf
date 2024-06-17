@@ -6,8 +6,10 @@ import { useDropzone } from "react-dropzone";
 interface Prop {
   callback: (url: string) => any;
 }
+
 const AvatarUpload = ({ callback }: Prop) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
 
   const onDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -38,13 +40,22 @@ const AvatarUpload = ({ callback }: Prop) => {
           headers: {
             "Content-Type": "multipart/form-data",
           },
+          onUploadProgress: (progressEvent) => {
+            if (progressEvent.total) {
+              const percentCompleted = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              );
+              setUploadProgress(percentCompleted);
+            }
+          },
         }
       );
 
       console.log("Upload successful", response.data);
       callback(response.data.secure_url ?? "");
 
-      // Handle the uploaded image URL as needed (e.g., save it to the database)
+      // Reset progress after upload
+      setUploadProgress(0);
     } catch (error) {
       console.error("Upload failed", error);
     }
@@ -72,7 +83,12 @@ const AvatarUpload = ({ callback }: Prop) => {
           <p>Drag & drop an avatar file here, or click to select one</p>
         )}
       </div>
-      {/* <button onClick={uploadAvatar}>Upload Avatar</button> */}
+      {uploadProgress > 0 && (
+        <div style={{ marginTop: "10px" }}>
+          <progress className="" value={uploadProgress} max="100" />
+          <span>{uploadProgress}%</span>
+        </div>
+      )}
     </div>
   );
 };

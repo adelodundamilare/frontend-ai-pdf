@@ -97,3 +97,11 @@ export enum EnumAiChat {
   summarizer,
   note_summarizer,
 }
+
+export interface IHistory {
+  id: number;
+  title: string;
+  description: string;
+  created_at: string;
+  user: number;
+}
