@@ -20,7 +20,6 @@ const AvatarUpload = ({ callback }: Prop) => {
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   const uploadAvatar = async (avatar: File | null) => {
-    console.log({ avatar });
     if (!avatar) return;
 
     try {

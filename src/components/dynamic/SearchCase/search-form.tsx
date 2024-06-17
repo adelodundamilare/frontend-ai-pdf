@@ -20,12 +20,10 @@ const SearchForm = ({ callback }: Props) => {
       ]);
 
       courtsRes.json().then((data) => {
-        // console.log({ data });
         setCourts(data.results);
       });
 
       jurisdictionsRes.json().then((data) => {
-        console.log({ data });
         setJurisdictions(data.results);
       });
     };

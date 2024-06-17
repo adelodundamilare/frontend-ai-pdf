@@ -23,7 +23,6 @@ const SearchCaseSingleScreen = () => {
           }
         );
         const data = await response.json();
-        console.log({ data });
         setSingleCase(data);
       } catch (error) {
       } finally {

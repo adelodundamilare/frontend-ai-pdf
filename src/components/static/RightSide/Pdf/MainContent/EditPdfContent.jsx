@@ -51,7 +51,6 @@ const Content = () => {
   const pdfFile = location.state.pdf[0];
   const objectUrl = URL.createObjectURL(pdfFile);
 
-  console.log({ objectUrl });
   useEffect(() => {
     const container = containerRef.current;
     let PSPDFKit;

@@ -21,7 +21,6 @@ const Message = ({ fileUrl, title, mergeID, onClose }) => {
 
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      console.log({ response, fileUrl });
       link.setAttribute("download", extractFilenameFromUrl(fileUrl));
       document.body.appendChild(link);
       link.click();

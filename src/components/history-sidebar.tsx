@@ -15,7 +15,6 @@ const HistorySidebar = () => {
   useEffect(() => {
     const fetchLatestHistory = async () => {
       const res = await authRequest.get("/history/latest/");
-      console.log({ res });
       setHistory(res?.data?.data);
     };
 
