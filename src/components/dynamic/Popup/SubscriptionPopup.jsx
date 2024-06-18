@@ -84,11 +84,11 @@ const SubscriptionPopup = () => {
     <div className="subscription-popup-overlay">
       <div className="subscription-popup">
         <div className=" bg-white font-roboto p-3 rounded-md md:w-[50vw] sm:w-[80vw] w-[98vw]">
-          {/* <img src={CrossIcon} alt="" srcset="" className=' float-right cursor-pointer' onClick={() => setshowSubscriptionPopup(false)} /> */}
+          {/* <img src={CrossIcon} alt="" srcSet="" className=' float-right cursor-pointer' onClick={() => setshowSubscriptionPopup(false)} /> */}
           <img
             src={CrossIcon}
             alt=""
-            srcset=""
+            srcSet=""
             className=" float-right cursor-pointer"
             onClick={Back}
           />

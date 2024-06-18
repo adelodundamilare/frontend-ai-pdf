@@ -85,7 +85,7 @@ const ForgotPopup = ({ shouldUpdate }) => {
           }}
         >
           <div className=" bg-white w-fit font-roboto p-3 rounded-md">
-            {/* <img src={CrossIcon} alt="" srcset="" className=' float-right cursor-pointer' onClick={() => setisForgotPopup(false)} /> */}
+            {/* <img src={CrossIcon} alt="" srcSet="" className=' float-right cursor-pointer' onClick={() => setisForgotPopup(false)} /> */}
             <h1 className="text-center text-xl">Reset your password</h1>
 
             <div className="flex justify-center items-center mt-2">
