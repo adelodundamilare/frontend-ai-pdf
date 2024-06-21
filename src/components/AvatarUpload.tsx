@@ -110,7 +110,11 @@ export const AvatarImage: React.FC<ImageProps> = ({
   const [base64, setBase64] = useState<string | null>(null);
 
   async function fetchImageAsBase64(imageUrl: string): Promise<string> {
-    const response = await fetch(imageUrl);
+    const url = imageUrl.replace(
+      /https:\/lh3\.googleusercontent\.com/g,
+      "https://lh3.googleusercontent.com"
+    );
+    const response = await fetch(url);
     const blob = await response.blob();
     return new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
