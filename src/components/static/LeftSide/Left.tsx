@@ -6,7 +6,6 @@ import PdfIcon from "../../../assets/pdf.svg";
 import LibraryIcon from "@/assets/library.svg";
 import UpArrowIcon from "../../../assets/uparrow.svg";
 import SettingIcon from "../../../assets/setting.svg";
-import ProfileImage from "../../../assets/profile.png";
 import Logo from "../../../assets/logo1.png";
 
 import "./style.css";
@@ -16,6 +15,7 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import { IProfile } from "@/lib/types";
 import HistorySidebar from "@/components/history-sidebar";
+import { AvatarImage } from "@/components/AvatarUpload";
 // import SubscriptionPopup from './../../dynamic/Popup/SubscriptionPopup'
 
 const Left = ({ setshowSideBar, showSidebar }: any) => {
@@ -191,10 +191,8 @@ const Left = ({ setshowSideBar, showSidebar }: any) => {
               onClick={() => nav("/profile")}
             >
               <div className="flex items-center gap-2">
-                <img
-                  src={user?.avatar ?? ProfileImage}
-                  alt=""
-                  className="w-[50px] h-[50px] object-cover rounded-md"
+                <AvatarImage
+                  imageUrl={user?.avatar ?? ""}
                   onClick={() => nav("/profile")}
                 />
                 <p className="text-sm ellipsis-text2 w-[6rem]">

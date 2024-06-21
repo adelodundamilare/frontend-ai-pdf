@@ -11,6 +11,7 @@ import { IProfile } from "@/lib/types";
 import UpdateNamePopup from "@/components/dynamic/Popup/UpdateNamePopup";
 import ProgressModal from "@/components/Progress";
 import UpdateAvatarPopup from "@/components/dynamic/Popup/UpdateAvatarPopup";
+import { AvatarImage } from "@/components/AvatarUpload";
 
 const UserProfile = () => {
   const [userProfile, setUserProfile] = useState<IProfile>();
@@ -98,10 +99,15 @@ const UserProfile = () => {
 
                   <button onClick={() => setUpdateAvatarPopup(true)}>
                     <div className="relative">
-                      <img
+                      {/* <img
                         src={userProfile?.avatar ?? BigProfileImage}
                         alt=""
                         className="w-[70px] h-[70px] object-cover rounded-md"
+                      /> */}
+
+                      <AvatarImage
+                        imageUrl={userProfile?.avatar ?? ""}
+                        className="w-[70px] h-[70px]"
                       />
                       <div className="absolute -bottom-2 -right-1 cursor-pointer w-[2rem] h-[2rem] rounded-full bg-[#D9D9D9] flex justify-center items-center">
                         <img src={EditIcon} alt="" />

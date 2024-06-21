@@ -1,7 +1,9 @@
 // AvatarUpload.tsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useDropzone } from "react-dropzone";
+
+import ProfileImage from "@/assets/profile.png";
 
 interface Prop {
   callback: (url: string) => any;
@@ -93,3 +95,48 @@ const AvatarUpload = ({ callback }: Prop) => {
 };
 
 export default AvatarUpload;
+
+interface ImageProps {
+  imageUrl: string;
+  className?: string;
+  onClick?: () => void;
+}
+
+export const AvatarImage: React.FC<ImageProps> = ({
+  imageUrl,
+  className,
+  onClick,
+}) => {
+  const [base64, setBase64] = useState<string | null>(null);
+
+  async function fetchImageAsBase64(imageUrl: string): Promise<string> {
+    const response = await fetch(imageUrl);
+    const blob = await response.blob();
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  useEffect(() => {
+    fetchImageAsBase64(imageUrl).then(setBase64).catch(console.error);
+  }, [imageUrl]);
+
+  return base64 ? (
+    <img
+      src={base64 ?? ProfileImage}
+      alt="Avatar"
+      className={"w-[50px] h-[50px] object-cover rounded-md" + " " + className}
+      onClick={onClick}
+    />
+  ) : (
+    <img
+      src={ProfileImage}
+      alt="Avatar"
+      className={"w-[50px] h-[50px] object-cover rounded-md" + " " + className}
+      onClick={onClick}
+    />
+  );
+};
