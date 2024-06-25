@@ -7,13 +7,19 @@ interface SearchResultsProps {
 }
 
 const SearchResults: React.FC<SearchResultsProps> = ({ results }) => {
+  if (!results) {
+    <div className="h-[200px] bg-gray-50 grid place-content-center">
+      No Case Found
+    </div>;
+  }
   return (
     <div className="mt-4">
-      {results.map((result, index) => (
-        <div key={index}>
-          <CaseCard caseData={result} />
-        </div>
-      ))}
+      {results &&
+        results.map((result, index) => (
+          <div key={index}>
+            <CaseCard caseData={result} />
+          </div>
+        ))}
     </div>
   );
 };
