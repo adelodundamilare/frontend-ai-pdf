@@ -196,7 +196,7 @@ const Left = ({ setshowSideBar, showSidebar }: any) => {
                   onClick={() => nav("/profile")}
                 />
                 <p className="text-sm ellipsis-text2 w-[6rem]">
-                  {user?.name ? user?.email.split("@")[0] : "Guest"}
+                  {user?.name ?? user?.email.split("@")[0] ?? "Guest"}
                 </p>
               </div>
 
