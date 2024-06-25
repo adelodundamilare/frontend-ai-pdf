@@ -45,6 +45,7 @@ const OrganizePdfContent = () => {
   const [fileUrl, setFileUrl] = useState(null);
   const [isLoading, setIsLoading] = useState(0);
   const [mergeID, setMergeId] = useState(null);
+  const [pagesToExclude, setPagesToExclude] = useState([]);
 
   const onDragEnd = useCallback(
     (result) => {
@@ -68,7 +69,10 @@ const OrganizePdfContent = () => {
     setItems(pdfItems);
   };
 
-  if (!pdfFile) return <p>no pdf selected</p>;
+  const removeItem = (item) => {
+    setItems(items.filter((i) => i !== item));
+    setPagesToExclude([...pagesToExclude, item.pageNumber]);
+  };
 
   const handler = async (e) => {
     const formData = new FormData();
@@ -77,6 +81,7 @@ const OrganizePdfContent = () => {
       "user_order",
       items.map((item) => item.pageNumber)
     );
+    formData.append("pages_to_exclude", pagesToExclude);
 
     try {
       setIsLoading(true);
@@ -98,6 +103,8 @@ const OrganizePdfContent = () => {
       console.error("Error stamping files:", error);
     }
   };
+
+  if (!pdfFile) return <p>no pdf selected</p>;
 
   if (isLoading) return <ProgressModal />;
 
@@ -132,7 +139,7 @@ const OrganizePdfContent = () => {
             <p>Back</p>
           </div>
 
-          <div className="absolute right-2 z-10">
+          {/* <div className="absolute right-2 z-10">
             <div className="w-[2rem] h-[2rem] rounded-[0.375rem] bg-[#20808d] flex justify-center items-center mb-2 cursor-pointer">
               <AiOutlinePlus alt="" className=" text-white" />
             </div>
@@ -148,7 +155,7 @@ const OrganizePdfContent = () => {
             <div className="w-[2rem] h-[2rem] rounded-[0.375rem] bg-[#20808d] flex justify-center items-center mb-2 cursor-pointer">
               <img src={DropBoxIcon} alt="" />
             </div>
-          </div>
+          </div> */}
           {pdfFile && (
             <DragDropContext onDragEnd={onDragEnd}>
               <Droppable droppableId="droppable" direction="horizontal">
@@ -163,7 +170,7 @@ const OrganizePdfContent = () => {
                       file={pdfFile}
                       onLoadSuccess={onDocumentLoadSuccess}
                     >
-                      <div className="grid grid-cols-5 sm:grid-cols-2">
+                      <div className="grid grid-cols-1 lg:grid-cols-5">
                         {items.map((item, index) => (
                           <Draggable
                             key={item.id}
@@ -176,6 +183,7 @@ const OrganizePdfContent = () => {
                                   ref={provided.innerRef}
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
+                                  className="relative"
                                   style={getItemStyle(
                                     snapshot.isDragging,
                                     provided.draggableProps.style
@@ -188,6 +196,13 @@ const OrganizePdfContent = () => {
                                     renderAnnotationLayer={false}
                                     width={250}
                                   />
+                                  <button
+                                    type="button"
+                                    onClick={() => removeItem(item)}
+                                    className="w-7 h-7 rounded-full bg-red-500 text-white absolute -right-[10px] -top-[10px]"
+                                  >
+                                    -
+                                  </button>
                                 </div>
                               );
                             }}
