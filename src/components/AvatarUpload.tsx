@@ -128,14 +128,20 @@ export const AvatarImage: React.FC<ImageProps> = ({
     fetchImageAsBase64(imageUrl).then(setBase64).catch(console.error);
   }, [imageUrl]);
 
-  return base64 ? (
-    <img
-      src={base64 ?? ProfileImage}
-      alt="Avatar"
-      className={"w-[50px] h-[50px] object-cover rounded-md" + " " + className}
-      onClick={onClick}
-    />
-  ) : (
+  if (imageUrl && base64) {
+    return (
+      <img
+        src={base64 ?? ProfileImage}
+        alt="Avatar"
+        className={
+          "w-[50px] h-[50px] object-cover rounded-md" + " " + className
+        }
+        onClick={onClick}
+      />
+    );
+  }
+
+  return (
     <img
       src={ProfileImage}
       alt="Avatar"
