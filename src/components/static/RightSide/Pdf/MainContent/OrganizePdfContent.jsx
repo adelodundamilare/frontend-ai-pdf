@@ -132,7 +132,7 @@ const OrganizePdfContent = () => {
             <p>Back</p>
           </div>
 
-          <div className="absolute right-2">
+          <div className="absolute right-2 z-10">
             <div className="w-[2rem] h-[2rem] rounded-[0.375rem] bg-[#20808d] flex justify-center items-center mb-2 cursor-pointer">
               <AiOutlinePlus alt="" className=" text-white" />
             </div>
@@ -157,13 +157,13 @@ const OrganizePdfContent = () => {
                     ref={provided.innerRef}
                     style={getListStyle(snapshot.isDraggingOver)}
                     {...provided.droppableProps}
-                    className="flex gap-2"
+                    className="flex gap-2 relative z-0"
                   >
                     <Document
                       file={pdfFile}
                       onLoadSuccess={onDocumentLoadSuccess}
                     >
-                      <div className="flex">
+                      <div className="grid grid-cols-5 sm:grid-cols-2">
                         {items.map((item, index) => (
                           <Draggable
                             key={item.id}
@@ -210,8 +210,9 @@ const OrganizePdfContent = () => {
 
           <div className="w-[100%] pr-2 pl-2 mt-4">
             <p className="tex-[#474747] mb-2">Organize Mode:</p>
+            <p>Drag and drop items to organize document</p>
 
-            <div className="flex justify-between gap-x-2 items-center">
+            {/* <div className="flex justify-between gap-x-2 items-center">
               <div className="w-[50%]">
                 <div
                   style={{ border: "1px solid black" }}
@@ -229,7 +230,7 @@ const OrganizePdfContent = () => {
                   <p className="text-xs">Bottom To Top</p>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
 
           <div className=" absolute bottom-3 flex justify-center items-center">
