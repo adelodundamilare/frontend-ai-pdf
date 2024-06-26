@@ -10,6 +10,7 @@ import GalleryImage from "../../../assets/gallery.svg";
 import ListImage from "../../../assets/list.svg";
 import DotImage from "../../../assets/dot.svg";
 import { IUploads } from "@/lib/types";
+import { extractFilenameFromUrl } from "@/constants/helpers";
 
 interface Prop {
   title: string;
@@ -28,6 +29,23 @@ const UploadAndDownloadPdf = ({ title }: Prop) => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const downloadPDF = async (fileUrl: any) => {
+    try {
+      const response = await fetch(fileUrl);
+      const blob = await response.blob();
+
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute("download", extractFilenameFromUrl(fileUrl));
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      //   onClose();
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -108,15 +126,18 @@ const UploadAndDownloadPdf = ({ title }: Prop) => {
                       </div>
 
                       <div className="flex justify-center items-center">
-                        <img
-                          src={index % 2 != 0 ? PdfImage : DocImage}
-                          alt=""
-                        />
+                        <button onClick={() => downloadPDF(item?.file ?? "")}>
+                          <img
+                            // src={index % 2 != 0 ? PdfImage : DocImage}
+                            src={PdfImage}
+                            alt=""
+                          />
+                        </button>
                       </div>
 
                       <div className="flex justify-center items-center mt-4">
                         <p className="text-[#303030]">
-                          {item?.file_name ?? ""}
+                          {item?.file_name ?? item?.created_at}
                         </p>
                       </div>
 
@@ -157,7 +178,9 @@ const UploadAndDownloadPdf = ({ title }: Prop) => {
                       alt=""
                       className="w-[2.5rem] h-[2.5rem]"
                     />
-                    <p className="text-sm">{item?.file_name ?? ""}</p>
+                    <p className="text-sm">
+                      {item?.file_name ?? item?.created_at}
+                    </p>
                     <div
                       style={{ border: "1px solid #d9d9d9" }}
                       onClick={() =>
