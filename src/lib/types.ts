@@ -105,3 +105,11 @@ export interface IHistory {
   created_at: string;
   user: number;
 }
+
+export interface IUploads {
+  id: number;
+  file: string;
+  file_name: string;
+  created_at: string;
+  user: number;
+}

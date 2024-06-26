@@ -105,7 +105,7 @@ const Left = ({ setshowSideBar, showSidebar }: any) => {
           </div>
 
           {/* LIBRARY LINK AND IT'S SUB CATEGORIES LINK  */}
-          {/* <div className="flex justify-between items-center cursor-pointer mb-3 hover:bg-[#445662] p-2 rounded-md">
+          <div className="flex justify-between items-center cursor-pointer mb-3 hover:bg-[#445662] p-2 rounded-md">
             <div className="flex items-center gap-4">
               <img
                 src={LibraryIcon}
@@ -128,10 +128,10 @@ const Left = ({ setshowSideBar, showSidebar }: any) => {
                 />
               )}
             </div>
-          </div> */}
+          </div>
 
           {/* SUB LIBRARY CATEGORIES LINK  */}
-          {/* <div className="mb-4">
+          <div className="mb-4">
             {showLibrary ? (
               <div className="flex gap-6 items-center">
                 <div className="w-[1px] h-[4rem] bg-[#D8D8CF99]"></div>
@@ -142,16 +142,16 @@ const Left = ({ setshowSideBar, showSidebar }: any) => {
                   >
                     Uploaded
                   </p>
-                  <p
+                  {/* <p
                     onClick={() => nav("/pdf/download")}
                     className="tracking-wider text-sm cursor-pointer"
                   >
                     Downloaded
-                  </p>
+                  </p> */}
                 </div>
               </div>
             ) : null}
-          </div> */}
+          </div>
 
           <HistorySidebar />
 

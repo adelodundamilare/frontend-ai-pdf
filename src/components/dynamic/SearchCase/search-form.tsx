@@ -69,7 +69,7 @@ const SearchForm = ({ callback }: Props) => {
           </p>
         </div>
       </div>
-      <form className="mx-auto mt-3">
+      <form onSubmit={(e) => e.preventDefault()} className="mx-auto mt-3">
         <div className="relative flex items-center w-full shadow-md h-12 rounded-lg focus-within:shadow-lg bg-gray-100 overflow-hidden">
           <div className="grid place-items-center h-full w-12 text-gray-300">
             <svg
