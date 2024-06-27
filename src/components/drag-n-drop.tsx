@@ -19,7 +19,7 @@ const DragNDrop = ({ label, handleClick, multiple }: Prop) => {
     <div className="flex justify-center items-center gap-3 mt-[2rem]">
       {/* UPLOAD PDF  */}
       <div className="w-[85%] sm:w-[50%] shadow-ChatBoxShadown h-[10rem] relative rounded-[0.25rem] p-3">
-        <p className="text-center text-[#47474F]">Drag and drop PDF here</p>
+        <p className="text-center text-[#47474F]">Drag and drop File here</p>
 
         <p className="text-center mt-[1.5rem]">or</p>
 
@@ -36,14 +36,14 @@ const DragNDrop = ({ label, handleClick, multiple }: Prop) => {
                 htmlFor="fileInput"
                 className="bg-[#20808D] text-white w-[12rem] h-[2.4rem] rounded-md flex items-center justify-center cursor-pointer"
               >
-                Select PDF file
+                Select file
               </label> */}
 
           <label
             htmlFor="fileInput"
             className="bg-[#20808D] text-white w-[12rem] h-[2.4rem] rounded-md flex items-center justify-center cursor-pointer"
           >
-            {label ?? "Select PDF file"}
+            {label ?? "Select file"}
           </label>
         </div>
       </div>

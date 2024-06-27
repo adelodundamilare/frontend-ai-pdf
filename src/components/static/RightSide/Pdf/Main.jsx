@@ -39,12 +39,12 @@ const Main = ({ title, description, link }) => {
     } else{
       nav(link, { state: { pdf: selectedFiles } });
     }
-   
+
 
     // nav(link, { state: { pdf: selectedFiles } });
-   
-    
-  } 
+
+
+  }
 
 
 
@@ -64,7 +64,7 @@ const Main = ({ title, description, link }) => {
           htmlFor="fileInput"
           className="bg-[#20808D] text-white w-[12rem] h-[2.4rem] rounded-md flex items-center justify-center cursor-pointer"
         >
-          Select PDF file
+          Select file
         </label>
       );
     }
@@ -123,7 +123,7 @@ const Main = ({ title, description, link }) => {
         <div className="flex justify-center items-center gap-3 mt-[2rem]">
           {/* UPLOAD PDF  */}
           <div className="w-[85%] sm:w-[50%] shadow-ChatBoxShadown h-[10rem] relative rounded-[0.25rem] p-3">
-            <p className="text-center text-[#47474F]">Drag and drop PDF here</p>
+            <p className="text-center text-[#47474F]">Drag and drop file here</p>
 
             <p className="text-center mt-[1.5rem]">or</p>
 
@@ -145,7 +145,7 @@ const Main = ({ title, description, link }) => {
                 htmlFor="fileInput"
                 className="bg-[#20808D] text-white w-[12rem] h-[2.4rem] rounded-md flex items-center justify-center cursor-pointer"
               >
-                Select PDF file
+                Select file
               </label> */}
                {renderFileSelectionButton()}
             </div>

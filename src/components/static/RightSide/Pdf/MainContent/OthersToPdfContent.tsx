@@ -17,7 +17,6 @@ import { authRequest } from "../../../../../config/baseUrl";
 
 const OthersToPdfContent = () => {
   const location = useLocation();
-  console.log(location.state.docx[0], "words");
   const [showSideBar, setshowSideBar] = useState(false);
   const [showLeftSideBar, setshowLeftSideBar] = useState(false);
   const nav = useNavigate();
@@ -31,8 +30,8 @@ const OthersToPdfContent = () => {
     setIsLoading(true);
 
     const formData = new FormData();
-    location.state.docx.map((item, idx) => {
-      formData.append("input_files", location.state.docx[idx]);
+    location.state.docx.map((item: any, idx: any) => {
+      formData.append("input_file", location.state.docx[idx]);
     });
 
     try {
@@ -44,18 +43,16 @@ const OthersToPdfContent = () => {
         },
       });
 
-      console.log(response, "res");
-
-      const newcompressFileUrl =
-        response.data.conversion_data.word_to_pdfs[0].word_to_pdf;
-      setCompressedFileUrl(newcompressFileUrl);
-      console.log(newcompressFileUrl, "newcompressFileUrl");
-      const newMergeId = response.data.conversion_data.id;
-      setMergeId(newMergeId);
-      setIsButtonClicked(true);
+      const data = response.data?.data;
+      const newFileUrl = data?.pdf;
+      setCompressedFileUrl(newFileUrl);
+      // console.log(newcompressFileUrl, "newcompressFileUrl");
+      // const newMergeId = response.data.conversion_data.id;
+      setMergeId(data?.id);
+      // setIsButtonClicked(true);
       setIsLoading(false);
-    } catch (error) {
-      toast.error(error);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.error || "Error occurred");
       setIsLoading(false);
       console.error("Error merging files:", error);
     }
@@ -65,7 +62,7 @@ const OthersToPdfContent = () => {
 
   return (
     <>
-      {isButtonClicked ? (
+      {mergeID ? (
         <OthersToPdfMessage
           mergeID={mergeID}
           compressedFileUrl={compressedFileUrl}
@@ -93,11 +90,11 @@ const OthersToPdfContent = () => {
 
               <div className="absolute right-2">
                 <div className="w-[2rem] h-[2rem] rounded-[0.375rem] bg-[#20808d] flex justify-center items-center mb-2 cursor-pointer">
-                  <AiOutlinePlus alt="" className=" text-white" />
+                  <AiOutlinePlus className=" text-white" />
                 </div>
 
                 <div className="w-[2rem] h-[2rem] rounded-[0.375rem] bg-[#20808d] flex justify-center items-center mb-2 cursor-pointer">
-                  <FaCopy alt="" className=" text-white" />
+                  <FaCopy className=" text-white" />
                 </div>
 
                 <div className="w-[2rem] h-[2rem] rounded-[0.375rem] bg-[#20808d] flex justify-center items-center mb-2 cursor-pointer">
@@ -182,7 +179,7 @@ const OthersToPdfContent = () => {
 
                   <div className="flex justify-center items-center flex-col">
                     <p className="text-lg text-center pl-4 pr-4">
-                      Conver to PDF
+                      Convert to PDF
                     </p>
                   </div>
 
