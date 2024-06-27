@@ -1,27 +1,34 @@
 import React from "react";
+import { toast } from "react-toastify";
 import { FaArrowLeftLong, FaTrash } from "react-icons/fa6";
+//
 import StampIcon from "../../../../../../assets/stamp.svg";
 import PTOIcon from "../../../../../../assets/pto.svg";
 import OTPIcon from "../../../../../../assets/otp.svg";
 import OCRIcon from "../../../../../../assets/ocr.svg";
 import ProtectIcon from "../../../../../../assets/protect.svg";
-import { toast } from "react-toastify";
 import { authRequest } from "../../../../../../config/baseUrl";
 
-const OthersToPdfMessage = ({ compressedFileUrl, mergeID, onClose }) => {
-  const extractFilenameFromUrl = (url) => {
+interface Props {
+  fileUrl: string;
+  title: string;
+  mergeID: string;
+  onClose: () => void;
+}
+const Message = ({ fileUrl, title, mergeID, onClose }: Props) => {
+  const extractFilenameFromUrl = (url: any) => {
     const urlObject = new URL(url);
     return urlObject.pathname.split("/").pop();
   };
 
   const downloadCompressPdf = async () => {
     try {
-      const response = await fetch(compressedFileUrl);
+      const response = await fetch(fileUrl);
       const blob = await response.blob();
 
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.setAttribute("download", extractFilenameFromUrl(compressedFileUrl));
+      link.setAttribute("download", extractFilenameFromUrl(fileUrl) ?? "");
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -30,45 +37,40 @@ const OthersToPdfMessage = ({ compressedFileUrl, mergeID, onClose }) => {
       console.error("Error downloading PDF:", error);
     }
   };
-  const backPdf = async () => {
+  const backPdf = () => {
     onClose();
   };
 
   const DeleteMergePdf = async () => {
     try {
       const response = await authRequest.delete(
-        `/pdf/word_to_pdf/delete/${mergeID}/`
+        `/pdf/compress_pdf/delete/${mergeID}/`
       );
 
-      if (response.status === 204) {
-        toast.success("Pdf file deleted successfully");
-        // Add any additional logic you want to execute after successful deletion
-      } else {
-        toast.error(
-          "Error deleting Pdf file:",
-          response.status,
-          response.statusText
-        );
+      if (response.status === 204 || response.status === 200) {
+        toast.success("PDF deleted successfully");
       }
-    } catch (error) {
-      toast.error("Error deleting Pdf file:", error.message);
+      toast.error("Error deleting PDF");
+    } catch (error: any) {
+      toast.error("Error deleting PDF:", error?.message);
     }
   };
 
   return (
     <div className="flex justify-center items-center h-screen">
       <div className=" flex justify-center items-center flex-col font-roboto mt-10">
-        <h1 className="text-[#303030] text-lg mb-3 text-center">
-          File have been Converted to the PDF!
-        </h1>
+        <h1 className="text-[#303030] text-lg mb-3 text-center">{title}</h1>
         <p className="text-[#474747] text-sm mb-3 text-center">
-          Click on download button to download Pdf file or continue to work on
-          the file with different tools displayed below.
+          Click on download button to download file or continue to work on the
+          file with different tools displayed below.
         </p>
         <div className="flex items-center gap-4">
-          <div className="w-[2rem] cursor-pointer h-[2rem] bg-[#303030] rounded-sm flex justify-center items-center shadow-CardShadow">
-            <FaArrowLeftLong onClick={backPdf} className="text-white" />
-          </div>
+          <button
+            onClick={backPdf}
+            className="w-[2rem] cursor-pointer h-[2rem] bg-[#303030] rounded-sm flex justify-center items-center shadow-CardShadow"
+          >
+            <FaArrowLeftLong className="text-white" />
+          </button>
           <button
             className="bg-[#20808D] text-white p-2 rounded-md w-[13rem]"
             onClick={downloadCompressPdf}
@@ -121,4 +123,4 @@ const OthersToPdfMessage = ({ compressedFileUrl, mergeID, onClose }) => {
   );
 };
 
-export default OthersToPdfMessage;
+export default Message;

@@ -20,17 +20,6 @@ const OtherToPdfScreen = () => {
   };
 
   return (
-    // <DashboardLayout>
-    //   <Main
-    //     title={"Other File Formats to PDF file"}
-    //     link={"/pdf/other/to/pdf/content"}
-    //     description={
-    //       "Turn your DOC, PPT, EXCEL, JPEG, PPTX and DOCX documents into PDF file. First by Choosing file format and then uploading the file accordingly "
-    //     }
-    //   />
-    //   {/* <OthersToPdfContent /> */}
-    // </DashboardLayout>
-
     <DashboardPdfLayout
       title={"Other File Formats to PDF file"}
       description="Turn your DOC, PPT, EXCEL, JPEG, PPTX and DOCX documents into PDF file. First by Choosing file format and then uploading the file accordingly"
