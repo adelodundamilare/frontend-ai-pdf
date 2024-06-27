@@ -146,15 +146,15 @@ const PdfToOtherContent = () => {
               <option selected={"txt" === format} value="txt">
                 TXT
               </option>
+              <option selected={"md" === format} value="md">
+                MD
+              </option>
               {/* <option selected={"jpg" === format} value="jpg">
                 JPG
               </option>
               <option selected={"png" === format} value="png">
                 PNG
-              </option>
-              <option selected={"md" === format} value="md">
-                MD
-              </option> */}
+              </option>*/}
             </select>
           </div>
 
