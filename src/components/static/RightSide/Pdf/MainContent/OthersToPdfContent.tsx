@@ -10,9 +10,11 @@ import Left from "../../../LeftSide/Left";
 import BackIcon from "../../../../../assets/back.svg";
 import DeviceIcon from "../../../../../assets/device.svg";
 import DropBoxIcon from "../../../../../assets/dropbox.svg";
-import DocsLogo from "../../../../../assets/docs.svg";
+import DocsLogo from "@/assets/docs.svg";
+import PdfImage from "@/assets/pdf.png";
+import QuestionIcon from "@/assets/question.png";
 import ProgressModal from "../../../../Progress";
-import { authRequest } from "../../../../../config/baseUrl";
+import { authRequest } from "@/config/baseUrl";
 import Message from "./DownloadPDF/Message";
 
 const OthersToPdfContent = () => {
@@ -57,6 +59,32 @@ const OthersToPdfContent = () => {
       console.error("Error:", error);
       toast.error(error?.response?.data?.error || "Error occurred");
     }
+  };
+
+  const getImgSrcIcon = () => {
+    const file: File = location.state?.docx?.[0];
+
+    if (!file) {
+      return QuestionIcon;
+    }
+    const name = file.name;
+
+    if (name.endsWith(".doc") || name.endsWith(".docx")) {
+      return DocsLogo;
+    }
+
+    if (name.endsWith(".pdf")) {
+      return PdfImage;
+    }
+    if (
+      name.endsWith(".png") ||
+      name.endsWith(".jpg") ||
+      name.endsWith(".jpeg")
+    ) {
+      return DocsLogo;
+    }
+
+    return QuestionIcon;
   };
 
   if (isLoading) return <ProgressModal isLoading={isLoading} />;
@@ -121,7 +149,7 @@ const OthersToPdfContent = () => {
                     display: "flex",
                   }}
                 >
-                  <img src={DocsLogo} alt="Docs Logo" />
+                  <img src={getImgSrcIcon()} alt="Docs Logo" />
                 </div>
                 {/* <Document
                                     file={location.state.pdf[0]}
