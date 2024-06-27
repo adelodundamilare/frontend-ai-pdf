@@ -49,7 +49,7 @@ const DashboardPdfLayout = ({ title, description, children }: Props) => {
           </p>
         </div>
 
-        {location === "other" && (
+        {/* {location === "other" && (
           <div className=" flex justify-center items-center mt-4">
             <div className="w-[98%] sm:w-[50%] shadow-ChatBoxShadown flex justify-between rounded-md">
               <div className="bg-[#20808D] p-3 rounded-tl-md rounded-bl-md">
@@ -62,7 +62,7 @@ const DashboardPdfLayout = ({ title, description, children }: Props) => {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* DashboardPdfLayout PDF UPLOAD SECTION  */}
 

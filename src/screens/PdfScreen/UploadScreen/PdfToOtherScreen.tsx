@@ -9,7 +9,7 @@ const PdfToOtherScreen = () => {
     const selectedFiles: any[] = event.target.files;
 
     nav("/pdf/to/other/content", {
-      state: { docx: Array.from(selectedFiles) },
+      state: { pdf: Array.from(selectedFiles) },
     });
   };
 
@@ -18,7 +18,7 @@ const PdfToOtherScreen = () => {
       title={"PDF File to Other File Formats"}
       description="Easily convert your PDF files into DOC, PPT, EXCEL, JPEG, PPTX and DOCX documents."
     >
-      <DragNDrop label="Select Word file" handleClick={handleClick} />
+      <DragNDrop label="Select PDF File" handleClick={handleClick} />
     </DashboardPdfLayout>
   );
 };

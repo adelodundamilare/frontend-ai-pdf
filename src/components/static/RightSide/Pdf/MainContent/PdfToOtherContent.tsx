@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import Left from "../../../LeftSide/Left";
-import BackIcon from "../../../../../assets/back.svg";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { FaCopy } from "react-icons/fa";
+import { AiOutlineArrowDown, AiOutlinePlus } from "react-icons/ai";
+import { Document, Page } from "react-pdf";
+import { toast } from "react-toastify";
+import { ImCross } from "react-icons/im";
+//
+import Left from "../../../LeftSide/Left";
+import BackIcon from "../../../../../assets/back.svg";
 import DeviceIcon from "../../../../../assets/device.svg";
 import DropBoxIcon from "../../../../../assets/dropbox.svg";
-import { AiOutlineArrowDown, AiOutlinePlus } from "react-icons/ai";
-import { ImCross } from "react-icons/im";
-import { extractFilenameFromUrl } from "../../../../../constants/helpers";
 import ProgressModal from "../../../../Progress";
-import { Document, Page } from "react-pdf";
 import { authRequest } from "../../../../../config/baseUrl";
-import { toast } from "react-toastify";
-import PdfToOtherFormatMessage from "./DownloadPDF/PdfToOtherFormatMessage";
+import Message from "./DownloadPDF/Message";
 
 const PdfToOtherContent = () => {
   const [showSideBar, setshowSideBar] = useState(false);
@@ -21,63 +21,53 @@ const PdfToOtherContent = () => {
   const nav = useNavigate();
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [isButtonClicked, setIsButtonClicked] = useState(false);
   const [compressedFileUrl, setCompressedFileUrl] = useState(null);
   const [mergeID, setMergeId] = useState(null);
+  const [format, setFormat] = useState("docx");
 
-  const pdfToOtherHandler = async () => {
-    setIsLoading(true)
+  const handler = async () => {
+    setIsLoading(true);
     const formData = new FormData();
     formData.append("input_pdf", location.state.pdf[0]);
+    formData.append("format", format);
 
     try {
-      const response = await authRequest.post("/pdf/pdf_to_image/", formData, {
+      const response = await authRequest.post("/pdf/pdf_to_other/", formData, {
         headers: {
-          "Content-Type": "multipart/form-data"
+          "Content-Type": "multipart/form-data",
         },
       });
 
-      const newcompressFileUrl = response.data.conversion_data.zip_file;
-      setCompressedFileUrl(newcompressFileUrl); 
-      console.log(newcompressFileUrl, 'newcompressFileUrl')
-      const newMergeId = response.data.conversion_data.id
-      setMergeId(newMergeId)
-      setIsButtonClicked(true)
-      // const link = document.createElement("a");
-      // link.href = mergedFileUrl;
-      // link.setAttribute("download", extractFilenameFromUrl(mergedFileUrl));
-      // document.body.appendChild(link);
-      // link.click();
-      // document.body.removeChild(link);
+      const data = response?.data?.data;
+      const newcompressFileUrl = data?.pdf;
+      const newMergeId = data?.id;
+      setCompressedFileUrl(newcompressFileUrl);
+      setMergeId(newMergeId);
+      setIsButtonClicked(true);
+      toast.success("File conversion successful");
+    } catch (error: any) {
+      console.error("Error:", error);
+      toast.error(error?.response?.data?.error || "Error occurred");
+    } finally {
       setIsLoading(false);
-    } catch (error) {
-      toast.error(error);
-      setIsLoading(false);
-      console.error("Error merging files:", error);
     }
   };
 
-  console.log(isLoading, "jkj");
-
   if (isLoading) return <ProgressModal isLoading={isLoading} />;
 
+  if (isButtonClicked) {
+    return (
+      <Message
+        mergeID={mergeID ?? ""}
+        title="File Conversion is completed!"
+        fileUrl={compressedFileUrl ?? ""}
+        onClose={() => setIsButtonClicked(false)}
+      />
+    );
+  }
+
   return (
-
-
-    <>
-
-    {isButtonClicked ? (
-          <PdfToOtherFormatMessage
-          mergeID ={mergeID}
-          compressedFileUrl={compressedFileUrl}
-          onClose={() => setIsButtonClicked(false)}
-          />
-        ) : (
-
-
-
-
     <div className="relative overflow-y-hidden">
       {/* HUMBURGER MENU  */}
       <div className="ml-3 md:hidden block pt-3">
@@ -99,11 +89,11 @@ const PdfToOtherContent = () => {
 
           <div className="absolute right-2">
             <div className="w-[2rem] h-[2rem] rounded-[0.375rem] bg-[#20808d] flex justify-center items-center mb-2 cursor-pointer">
-              <AiOutlinePlus alt="" className=" text-white" />
+              <AiOutlinePlus className=" text-white" />
             </div>
 
             <div className="w-[2rem] h-[2rem] rounded-[0.375rem] bg-[#20808d] flex justify-center items-center mb-2 cursor-pointer">
-              <FaCopy alt="" className=" text-white" />
+              <FaCopy className=" text-white" />
             </div>
 
             <div className="w-[2rem] h-[2rem] rounded-[0.375rem] bg-[#20808d] flex justify-center items-center mb-2 cursor-pointer">
@@ -115,21 +105,21 @@ const PdfToOtherContent = () => {
             </div>
           </div>
 
-          <div className='flex justify-center items-center absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]'>
-          <div className='w-[15rem] rounded-[0.5rem] bg-gray-100'>
-            <p className='text-sm m-3 bg-white p-2'>
-              <Document
-                file={location.state.pdf[0]}
-                onLoadError={(error) =>
-                  console.error("Error loading document:", error)
-                }
-              >
-                <Page
-                  pageNumber={1}
-                  renderTextLayer={false}
-                  renderAnnotationLayer={false}
-                />
-              </Document>
+          <div className="flex justify-center items-center absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+            <div className="w-[15rem] rounded-[0.5rem] bg-gray-100">
+              <p className="text-sm m-3 bg-white p-2">
+                <Document
+                  file={location.state.pdf[0]}
+                  onLoadError={(error) =>
+                    console.error("Error loading document:", error)
+                  }
+                >
+                  <Page
+                    pageNumber={1}
+                    renderTextLayer={false}
+                    renderAnnotationLayer={false}
+                  />
+                </Document>
               </p>
             </div>
           </div>
@@ -145,19 +135,33 @@ const PdfToOtherContent = () => {
 
           <div className="mt-4 w-[100%] pl-2 pr-2">
             <p className="ml-0">Choose file:</p>
-            <div
-              style={{ border: "1px solid #D9D9D9" }}
-              className="w-[100%] p-3 flex justify-between items-center rounded-md cursor-pointer mt-2"
+            <select
+              className="w-full border p-3 flex justify-between items-center rounded-md cursor-pointer mt-2"
+              onChange={(e) => setFormat(e.target.value)}
+              name="output_format"
             >
-              <p>DOC</p>
-              <AiOutlineArrowDown />
-            </div>
+              <option selected={"docx" === format} value="docx">
+                DOCX
+              </option>
+              <option selected={"txt" === format} value="txt">
+                TXT
+              </option>
+              {/* <option selected={"jpg" === format} value="jpg">
+                JPG
+              </option>
+              <option selected={"png" === format} value="png">
+                PNG
+              </option>
+              <option selected={"md" === format} value="md">
+                MD
+              </option> */}
+            </select>
           </div>
 
           <div className=" absolute bottom-3 flex justify-center items-center">
             <button
               className="bg-[#20808D] text-white w-[10rem] h-[2.5rem] rounded-md"
-              onClick={pdfToOtherHandler}
+              onClick={handler}
             >
               Convert
             </button>
@@ -200,7 +204,6 @@ const PdfToOtherContent = () => {
               </div>
 
               <div className="mt-4 w-[100%] pl-2 pr-2">
-                <p className="ml-0">Choose file:</p>
                 <div
                   style={{ border: "1px solid #D9D9D9" }}
                   className="w-[100%] p-3 flex justify-between items-center rounded-md cursor-pointer mt-2"
@@ -226,8 +229,6 @@ const PdfToOtherContent = () => {
         </div>
       )}
     </div>
-)}
-</>
   );
 };
 
