@@ -113,3 +113,16 @@ export interface IUploads {
   created_at: string;
   user: number;
 }
+
+export interface IPlans {
+  id: string;
+  name: string;
+  description: string;
+  active: boolean;
+  prices: IPrice[];
+}
+
+export interface IPrice {
+  id: string;
+  amount: number;
+}
