@@ -43,6 +43,7 @@ import SearchCaseSingleScreen from "@/screens/SearchCaseScreen/SearchCaseSingleS
 import NotFoundScreen from "@/screens/NotFoundScreen";
 import { isAuthenticated } from "@/constants/helpers";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { PremiumRoute } from "@/components/PremiumRoute";
 
 const Routers = () => {
   return (
@@ -148,7 +149,14 @@ const Routers = () => {
             path="/accounts/password_reset/confirm/"
             element={<ResetPassword />}
           />
-          <Route path="/search-case" element={<SearchCaseScreen />} />
+          <Route
+            path="/search-case"
+            element={
+              <PremiumRoute>
+                <SearchCaseScreen />
+              </PremiumRoute>
+            }
+          />
           <Route path="/search-case/:id" element={<SearchCaseSingleScreen />} />
         </Route>
         <Route path="*" element={<NotFoundScreen />} />

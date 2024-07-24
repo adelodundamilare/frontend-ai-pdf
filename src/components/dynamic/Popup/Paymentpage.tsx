@@ -1,273 +1,76 @@
-import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-//
-import SettingIcon from "@/assets/bsetting.svg";
-import EditIcon from "@/assets/edit.svg";
-import ArrowIcon from "@/assets/carrow2.svg";
-import QuestionIcon from "@/assets/question.png";
-import { authRequest } from "@/config/baseUrl";
-import { IProfile } from "@/lib/types";
-import UpdateNamePopup from "@/components/dynamic/Popup/UpdateNamePopup";
-import ProgressModal from "@/components/Progress";
-import UpdateAvatarPopup from "@/components/dynamic/Popup/UpdateAvatarPopup";
-import { AvatarImage } from "@/components/AvatarUpload";
-import AppQuery from "@/services/query";
-import AppMutation from "@/services/mutation";
+import { useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
+
+import { IPlans, IPrice } from "@/lib/types";
 import { useMutation } from "@tanstack/react-query";
 import SubscriptionService from "@/services/subscription";
+import { convertCentsToDollars } from "@/constants/helpers";
 
-const UserProfile = () => {
-  const [userProfile, setUserProfile] = useState<IProfile>();
-  const [updateNamePopup, setUpdateNamePopup] = useState(false);
-  const [updateAvatarPopup, setUpdateAvatarPopup] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+const PaymentPage = () => {
+  const location = useLocation();
 
-  const navigateTo = useNavigate();
+  const state = location.state || {};
+  const plan: IPlans = state?.plan;
+  const price: IPrice = state?.price;
+  const isMonthly: boolean = state?.isMonthly;
 
-  const { data: subscription, error } = AppQuery.useSubscriptionStatus();
-
-  const manageSubscription = useMutation({
-    mutationFn: SubscriptionService.manageSubscription,
+  const makePayment = useMutation({
+    mutationFn: SubscriptionService.makePayment,
     onSuccess: (res: any) => {
       window.location.href = res?.data;
     },
     onError: (error: Error) => {
-      // toast.error(error?.message ?? "Something went wrong, please try again.");
+      toast.error(error?.message ?? "Something went wrong, please try again.");
     },
   });
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("username");
-    // Redirect to the login page
-    window.location.reload();
-    navigateTo("/login-route"); // Replace with the actual path to your login page
+  const handleSubmit = async (event: any) => {
+    event.preventDefault();
+
+    makePayment.mutate({
+      price_id: price.id,
+      page_url: `${window.location.origin}/subscription`,
+    });
   };
-
-  useEffect(() => {
-    fetchUserProfile();
-  }, []);
-
-  const fetchUserProfile = async () => {
-    try {
-      setIsLoading(true);
-      const response = await authRequest.get("/accounts/profile/");
-      setUserProfile(response.data.data);
-    } catch (error) {
-      console.error("Error fetching user profile:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  if (isLoading) {
-    return <ProgressModal isLoading={isLoading} />;
-  }
 
   return (
-    <div className="relative">
-      <div className="flex-1 font-roboto h-screen overflow-y-auto pt-3 pb-5">
-        {/* SETTINGS HEADING DIV AND LINE  */}
+    <div className="">
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+          <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+            Confirm Your Subscription
+          </h2>
 
-        <div className="flex justify-center w-[100%] items-center">
-          <h1 className="text-center w-[100%] text-2xl">Settings</h1>
-        </div>
-
-        {/* LINE TAG  */}
-        <div className="w-[100%] h-[1px] bg-[#D9D9D9] mt-5"></div>
-
-        {/* MAIN PROFILE SECTION AND SIDE INFO   */}
-
-        <div className="w-[100%] h-fit mt-4 flex justify-center items-center">
-          <div className="sm:w-[50%] w-[80%]">
-            {/* USER INFO  */}
-
-            <div>
-              {/* ACCOUNT HEADING AND LINE  */}
-              <div>
-                <h1 className="text-2xl">Account</h1>
-                <div className="w-[100%] h-[1px] bg-[#D9D9D9] mt-2"></div>
-              </div>
-
-              {/* PROFILE INFO  */}
-              <div className="w-[100%] bg-[#F5F5F5] p-3 mt-3 rounded-md ">
-                {/* APPEARANCE  */}
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p>Appearance</p>
-                  </div>
-
-                  <div className="flex gap-2 items-center">
-                    <img src={SettingIcon} alt="none" />
-                    <p>System (Light)</p>
-                  </div>
-                </div>
-
-                {/* LINE TAG  */}
-                <div className="w-[100%] h-[1px] bg-[#D9D9D9] mt-5"></div>
-
-                {/* AVATAR  */}
-                <div className="flex justify-between items-start mt-4">
-                  <div>
-                    <p>Avatar</p>
-                  </div>
-
-                  <button onClick={() => setUpdateAvatarPopup(true)}>
-                    <div className="relative">
-                      {/* <img
-                        src={userProfile?.avatar ?? BigProfileImage}
-                        alt=""
-                        className="w-[70px] h-[70px] object-cover rounded-md"
-                      /> */}
-
-                      <AvatarImage
-                        imageUrl={userProfile?.avatar ?? ""}
-                        className="w-[70px] h-[70px]"
-                      />
-                      <div className="absolute -bottom-2 -right-1 cursor-pointer w-[2rem] h-[2rem] rounded-full bg-[#D9D9D9] flex justify-center items-center">
-                        <img src={EditIcon} alt="" />
-                      </div>
-                    </div>
-                  </button>
-                </div>
-
-                {/* LINE TAG  */}
-                <div className="w-[100%] h-[1px] bg-[#D9D9D9] mt-5"></div>
-                <div>
-                  {/* USER NAME  */}
-                  <div className="flex justify-between items-center mt-4">
-                    <div>
-                      <p>Username</p>
-                    </div>
-
-                    <div className="flex gap-2 items-center">
-                      <p>
-                        {userProfile?.name || userProfile?.email.split("@")[0]}
-                      </p>
-
-                      <button onClick={() => setUpdateNamePopup(true)}>
-                        <img
-                          src={EditIcon}
-                          alt=""
-                          className=" cursor-pointer"
-                        />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* LINE TAG  */}
-                  <div className="w-[100%] h-[1px] bg-[#D9D9D9] mt-5"></div>
-
-                  {/* Email  */}
-                  <div className="flex justify-between items-center mt-4">
-                    <div>
-                      <p>Email</p>
-                    </div>
-
-                    <div className="">
-                      <p>{userProfile?.email}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* LINE TAG  */}
-                <div className="w-[100%] h-[1px] bg-[#D9D9D9] mt-5"></div>
-
-                {/* Plan  */}
-                <div className="flex justify-between items-center mt-4">
-                  <div>
-                    <p>Plan</p>
-                  </div>
-
-                  <div className="">
-                    <p>Free Plan</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* SITE INFO  */}
-            <div className="mt-4">
-              {/* ACCOUNT HEADING AND LINE  */}
-              <div>
-                <h1 className="text-2xl">Site name</h1>
-                <div className="w-[100%] h-[1px] bg-[#D9D9D9] mt-2"></div>
-              </div>
-
-              <div className="w-[100%] bg-[#F5F5F5] pl-4 pr-4 pt-5 pb-5 mt-3 rounded-md">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p>Subscription</p>
-                  </div>
-                  <button
-                    onClick={() =>
-                      manageSubscription.mutate({
-                        page_url: `${window.location.origin}/subscription`,
-                      })
-                    }
-                  >
-                    <div className="flex gap-2 bg-[#E8E8E3] p-1 rounded-sm cursor-pointer">
-                      <img src={ArrowIcon} alt="" />
-                      <p>Manage Subscription</p>
-                    </div>
-                  </button>
-                </div>
-
-                <div className="w-[100%] h-[1px] bg-[#D9D9D9] mt-3"></div>
-
-                <div className="flex justify-end gap-3 mt-4">
-                  <p className="cursor-pointer" onClick={handleLogout}>
-                    Sign out
-                  </p>
-                  <p className="cursor-pointer">Delete Account</p>
-                </div>
-              </div>
-            </div>
+          <div className="mb-6 p-4 bg-gray-50 rounded-md">
+            <h3 className="text-lg font-semibold mb-2 text-gray-700">
+              {plan.name}
+            </h3>
+            <p className="text-gray-600 mb-2">{plan.description}</p>
+            <p className="text-xl font-bold text-gray-800">
+              ${convertCentsToDollars(price.amount)} /{" "}
+              {isMonthly ? "monthly" : "yearly"}
+            </p>
           </div>
+
+          <form onSubmit={handleSubmit}>
+            <button
+              type="submit"
+              disabled={makePayment.isPending}
+              className="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary transition duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {makePayment.isPending ? "Processing..." : "Confirm Payment"}
+            </button>
+          </form>
+
+          <p className="mt-4 text-sm text-gray-500 text-center">
+            By confirming your subscription, you allow Lawtabby to charge your
+            card for this payment and future payments in accordance with their
+            terms.
+          </p>
         </div>
       </div>
-
-      {/* DIV FOR SMALL QUESTION MARK LOGO */}
-      <div className="absolute bottom-[10px] float-right flex justify-end mr-[10rem] w-[96%]">
-        <div className="w-[1.3rem] h-[1.3rem] rounded-full flex justify-center items-center bg-[#36454F] cursor-pointer">
-          <img src={QuestionIcon} alt="" />
-        </div>
-        {/* #36454F */}
-      </div>
-
-      {updateNamePopup && (
-        <div className=" absolute top-0 left-0 w-[100%] h-[100%] bg-black bg-opacity-50">
-          <div className=" w-[100%] h-[100%] flex justify-center items-center opacity-100">
-            <div className=" mt-auto mb-auto flex justify-center items-center opacity-100">
-              <UpdateNamePopup
-                closeFunc={() => setUpdateNamePopup(false)}
-                callback={() => {
-                  setUpdateNamePopup(false);
-                  fetchUserProfile();
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {updateAvatarPopup && (
-        <div className=" absolute top-0 left-0 w-[100%] h-[100%] bg-black bg-opacity-50">
-          <div className=" w-[100%] h-[100%] flex justify-center items-center opacity-100">
-            <div className=" mt-auto mb-auto flex justify-center items-center opacity-100">
-              <UpdateAvatarPopup
-                closeFunc={() => setUpdateAvatarPopup(false)}
-                callback={() => {
-                  setUpdateAvatarPopup(false);
-                  fetchUserProfile();
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
 
-export default UserProfile;
+export default PaymentPage;

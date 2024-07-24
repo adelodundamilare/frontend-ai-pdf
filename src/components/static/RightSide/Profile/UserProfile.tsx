@@ -24,7 +24,7 @@ const UserProfile = () => {
 
   const navigateTo = useNavigate();
 
-  const { data: isSubscribed, error } = AppQuery.useSubscriptionStatus();
+  const { data: isSubscribed } = AppQuery.useSubscriptionStatus();
 
   const manageSubscription = useMutation({
     mutationFn: SubscriptionService.manageSubscription,
