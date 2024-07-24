@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 //
-import BigProfileImage from "../../../../assets/bigProfile.png";
-import SettingIcon from "../../../../assets/bsetting.svg";
-import EditIcon from "../../../../assets/edit.svg";
-import ArrowIcon from "../../../../assets/carrow2.svg";
-import QuestionIcon from "../../../../assets/question.png";
+import SettingIcon from "@/assets/bsetting.svg";
+import EditIcon from "@/assets/edit.svg";
+import ArrowIcon from "@/assets/carrow2.svg";
+import QuestionIcon from "@/assets/question.png";
 import { authRequest } from "@/config/baseUrl";
 import { IProfile } from "@/lib/types";
 import UpdateNamePopup from "@/components/dynamic/Popup/UpdateNamePopup";
@@ -13,8 +12,9 @@ import ProgressModal from "@/components/Progress";
 import UpdateAvatarPopup from "@/components/dynamic/Popup/UpdateAvatarPopup";
 import { AvatarImage } from "@/components/AvatarUpload";
 import AppQuery from "@/services/query";
-import SubscriptionService from "@/services/subscription";
+import AppMutation from "@/services/mutation";
 import { useMutation } from "@tanstack/react-query";
+import SubscriptionService from "@/services/subscription";
 
 const UserProfile = () => {
   const [userProfile, setUserProfile] = useState<IProfile>();
@@ -24,7 +24,7 @@ const UserProfile = () => {
 
   const navigateTo = useNavigate();
 
-  const { data: isSubscribed, error } = AppQuery.useSubscriptionStatus();
+  const { data: subscription, error } = AppQuery.useSubscriptionStatus();
 
   const manageSubscription = useMutation({
     mutationFn: SubscriptionService.manageSubscription,
@@ -199,27 +199,18 @@ const UserProfile = () => {
                   <div>
                     <p>Subscription</p>
                   </div>
-                  {!isSubscribed ? (
-                    <Link to="/subscription">
-                      <div className="flex gap-2 bg-[#E8E8E3] p-1 rounded-sm cursor-pointer">
-                        <img src={ArrowIcon} alt="" />
-                        <p>Learn More</p>
-                      </div>
-                    </Link>
-                  ) : (
-                    <button
-                      onClick={() =>
-                        manageSubscription.mutate({
-                          page_url: `${window.location.origin}/profile`,
-                        })
-                      }
-                    >
-                      <div className="flex gap-2 bg-[#E8E8E3] p-1 rounded-sm cursor-pointer">
-                        <img src={ArrowIcon} alt="" />
-                        <p>Manage Subscription</p>
-                      </div>
-                    </button>
-                  )}
+                  <button
+                    onClick={() =>
+                      manageSubscription.mutate({
+                        page_url: `${window.location.origin}/subscription`,
+                      })
+                    }
+                  >
+                    <div className="flex gap-2 bg-[#E8E8E3] p-1 rounded-sm cursor-pointer">
+                      <img src={ArrowIcon} alt="" />
+                      <p>Manage Subscription</p>
+                    </div>
+                  </button>
                 </div>
 
                 <div className="w-[100%] h-[1px] bg-[#D9D9D9] mt-3"></div>

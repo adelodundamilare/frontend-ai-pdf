@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { IProfile } from "@/lib/types";
 import HistorySidebar from "@/components/history-sidebar";
 import { AvatarImage } from "@/components/AvatarUpload";
+import AppQuery from "@/services/query";
 // import SubscriptionPopup from './../../dynamic/Popup/SubscriptionPopup'
 
 const Left = ({ setshowSideBar, showSidebar }: any) => {
@@ -24,6 +25,8 @@ const Left = ({ setshowSideBar, showSidebar }: any) => {
 
   const [showLibrary, setshowLibrary] = useState(false);
   const nav = useNavigate();
+
+  const { data: isSubscribed, error } = AppQuery.useSubscriptionStatus();
 
   useEffect(() => {
     const get_user_profile = async () => {
@@ -160,19 +163,23 @@ const Left = ({ setshowSideBar, showSidebar }: any) => {
           <div className="absolute bottom-2 ">
             {/* LINE  */}
 
-            <div className="w-[100%] h-[1px] bg-[#D8D8CF99]"></div>
+            <div className="w-[100%] h-[1px] bg-[#D8D8CF99] opacity-20"></div>
 
-            <h5 className="mt-2">Try Pro</h5>
-            <p className="text-sm  w-[13rem]">
-              Upgrade to upload more files and download PDF edits.
-            </p>
+            {!isSubscribed && (
+              <>
+                <h5 className="mt-2">Try Pro</h5>
+                <p className="text-sm  w-[13rem]">
+                  Upgrade to upload more files and download PDF edits.
+                </p>
 
-            <div className="flex items-center gap-2 mt-2">
-              <img src={UpArrowIcon} alt="" className="w-[1rem] h-[1rem]" />
-              <button className="text-sm" onClick={handleUpgradePlan}>
-                Upgrade Plan
-              </button>
-            </div>
+                <div className="flex items-center gap-2 mt-2">
+                  <img src={UpArrowIcon} alt="" className="w-[1rem] h-[1rem]" />
+                  <button className="text-sm" onClick={handleUpgradePlan}>
+                    Upgrade Plan
+                  </button>
+                </div>
+              </>
+            )}
 
             {/* {
               showSubscriptionPopup && (
