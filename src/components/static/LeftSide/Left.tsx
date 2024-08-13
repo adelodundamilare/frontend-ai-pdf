@@ -139,18 +139,18 @@ const Left = ({ setshowSideBar, showSidebar }: any) => {
               <div className="flex gap-6 items-center">
                 <div className="w-[1px] h-[4rem] bg-[#D8D8CF99]"></div>
                 <div>
-                  <p
+                  <button
                     onClick={() => nav("/pdf/upload")}
-                    className="mb-1 tracking-wider text-sm cursor-pointer"
+                    className="mb-1 tracking-wider block py-2 text-sm cursor-pointer"
                   >
                     Uploaded
-                  </p>
-                  {/* <p
+                  </button>
+                  <button
                     onClick={() => nav("/pdf/download")}
-                    className="tracking-wider text-sm cursor-pointer"
+                    className="tracking-wider block py-2 text-sm cursor-pointer"
                   >
                     Downloaded
-                  </p> */}
+                  </button>
                 </div>
               </div>
             ) : null}

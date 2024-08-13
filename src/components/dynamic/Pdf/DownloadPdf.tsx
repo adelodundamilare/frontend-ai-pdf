@@ -9,12 +9,12 @@ import GalleryImage from "../../../assets/gallery.svg";
 import ListImage from "../../../assets/list.svg";
 import DotImage from "../../../assets/dot.svg";
 import { IUploads } from "@/lib/types";
-import { extractFilenameFromUrl } from "@/constants/helpers";
+import { extractFilenameFromUrl, formattedDate } from "@/constants/helpers";
 
 interface Prop {
   title: string;
 }
-const UploadAndDownloadPdf = ({ title }: Prop) => {
+const DownloadPdf = ({ title }: Prop) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingModal, setIsLoadingModal] = useState(false);
 
@@ -49,7 +49,7 @@ const UploadAndDownloadPdf = ({ title }: Prop) => {
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const response = await authRequest.get("/history/user_uploads/");
+      const response = await authRequest.get("/history/user_downloads/");
       setData(response.data.data);
     } catch (error) {
       console.error("Error", error);
@@ -102,7 +102,7 @@ const UploadAndDownloadPdf = ({ title }: Prop) => {
         <div className="flex justify-center items-center flex-col">
           <h1 className="text-2xl">{title}</h1>
           <p className="text-[#505050] mt-2">
-            Access your uploaded file history
+            Access your downloaded file history
           </p>
         </div>
 
@@ -168,7 +168,7 @@ const UploadAndDownloadPdf = ({ title }: Prop) => {
 
                       <div className="flex justify-center items-center mt-4">
                         <p className="text-[#303030]">
-                          {item?.file_name ?? item?.created_at}
+                          {item?.file_name ?? formattedDate(item?.created_at)}
                         </p>
                       </div>
 
@@ -256,4 +256,4 @@ const UploadAndDownloadPdf = ({ title }: Prop) => {
   );
 };
 
-export default UploadAndDownloadPdf;
+export default DownloadPdf;

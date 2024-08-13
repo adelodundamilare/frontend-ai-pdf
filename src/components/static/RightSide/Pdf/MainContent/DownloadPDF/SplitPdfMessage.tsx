@@ -8,62 +8,46 @@ import ProtectIcon from "../../../../../../assets/protect.svg";
 import { toast } from "react-toastify";
 import { authRequest } from "../../../../../../config/baseUrl";
 
-const StampPdfMessage = ({ fileUrl, mergeID, onClose }) => {
-  const extractFilenameFromUrl = (url) => {
+const SplitPdfMessage = ({ splitedFileUrl, mergeID, onClose }: any) => {
+  const extractFilenameFromUrl = (url: string) => {
     const urlObject = new URL(url);
     return urlObject.pathname.split("/").pop();
   };
 
-  const downloadCompressPdf = async () => {
-    try {
-      const response = await fetch(fileUrl);
-      const blob = await response.blob();
-
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.setAttribute("download", extractFilenameFromUrl(fileUrl));
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      //   onClose();
-    } catch (error) {
-      console.error("Error downloading PDF:", error);
-    }
-  };
   const backPdf = async () => {
     onClose();
   };
 
   const DeleteMergePdf = async () => {
     try {
-      const response = await authRequest.delete(
-        `/pdf/compress_pdf/delete/${mergeID}/`
+      const response: any = await authRequest.delete(
+        `/pdf/split_pdf/delete/${mergeID}/`
       );
 
       if (response.ok) {
-        toast.success("Compress PDF deleted successfully");
+        toast.success("Split PDF deleted successfully");
         // Add any additional logic you want to execute after successful deletion
       } else {
-        toast.error(
-          "Error deleting Compress PDF:",
-          response.status,
-          response.statusText
-        );
+        toast.error("Error deleting Split PDF12:", response.status);
       }
-    } catch (error) {
-      toast.error("Error deleting Compress PDF:", error.message);
+    } catch (error: any) {
+      toast.error("Error deleting Split PDF11:", error.message);
     }
   };
+
+  function downloadSplitPdf(splitedFileUrl: any): void {
+    throw new Error("Function not implemented.");
+  }
 
   return (
     <div className="flex justify-center items-center h-screen">
       <div className=" flex justify-center items-center flex-col font-roboto mt-10">
         <h1 className="text-[#303030] text-lg mb-3 text-center">
-          PDFs have been Stamped!
+          PDFs have been Split!
         </h1>
         <p className="text-[#474747] text-sm mb-3 text-center">
-          Click on download button to download pdf or continue to work on the
-          file with different tools displayed below.
+          Click on download button to download split pdf or continue to work on
+          the file with different tools displayed below.
         </p>
         <div className="flex items-center gap-4">
           <div className="w-[2rem] cursor-pointer h-[2rem] bg-[#303030] rounded-sm flex justify-center items-center shadow-CardShadow">
@@ -71,7 +55,7 @@ const StampPdfMessage = ({ fileUrl, mergeID, onClose }) => {
           </div>
           <button
             className="bg-[#20808D] text-white p-2 rounded-md w-[13rem]"
-            onClick={downloadCompressPdf}
+            onClick={() => downloadSplitPdf(splitedFileUrl)}
           >
             Download to device
           </button>
@@ -121,4 +105,4 @@ const StampPdfMessage = ({ fileUrl, mergeID, onClose }) => {
   );
 };
 
-export default StampPdfMessage;
+export default SplitPdfMessage;

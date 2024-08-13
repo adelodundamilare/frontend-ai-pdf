@@ -1,9 +1,9 @@
-import UploadAndDownloadPdf from "../../components/dynamic/Pdf/UploadAndDownloadPdf";
+import DownloadPdf from "../../components/dynamic/Pdf/DownloadPdf";
 import DashboardLayout from "@/layouts/dashboard-layout";
 const PdfDownloadScreen = () => {
   return (
     <DashboardLayout>
-      <UploadAndDownloadPdf title={"Downloaded Files"} />
+      <DownloadPdf title={"Downloaded Files"} />
     </DashboardLayout>
   );
 };
