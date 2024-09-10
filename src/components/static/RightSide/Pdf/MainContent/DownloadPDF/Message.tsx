@@ -62,9 +62,9 @@ const Message = ({ fileUrl, title, mergeID, onClose }: Props) => {
           >
             Download to device
           </button>
-          <div className="w-[2rem] h-[2rem] bg-[#20808D] cursor-pointer rounded-sm flex justify-center items-center shadow-CardShadow">
+          {/* <div className="w-[2rem] h-[2rem] bg-[#20808D] cursor-pointer rounded-sm flex justify-center items-center shadow-CardShadow">
             <FaTrash onClick={DeleteMergePdf} className="text-white" />
-          </div>
+          </div> */}
         </div>
 
         <div className="flex items-center gap-4 mt-4">

@@ -10,24 +10,13 @@ import { pdfjs } from "react-pdf";
 import Konva from 'konva';
 import { Stage, Layer, Image as KonvaImage, Line, Transformer } from "react-konva";
 
+import { authRequest } from "../../../../../config/baseUrl";
 import Left from "../../../LeftSide/Left";
 import BackIcon from "../../../../../assets/back.svg";
 import DeviceIcon from "../../../../../assets/device.svg";
 import DropBoxIcon from "../../../../../assets/dropbox.svg";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
-
-// A4 size in points (1 point = 1/72 inch)
-const A4_WIDTH = 595;
-const A4_HEIGHT = 842;
-
-interface SignaturePosition {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  id: string;
-}
 
 const SignPDF: React.FC = () => {
   const location = useLocation();
@@ -40,7 +29,7 @@ const SignPDF: React.FC = () => {
   const [signature, setSignature] = useState<any[]>([]);
   const [isDrawing, setIsDrawing] = useState(false);
   const [signaturePositions, setSignaturePositions] = useState<{
-    [key: number]: SignaturePosition;
+    [key: number]: { x: number; y: number; width: number; height: number; id: string };
   }>({});
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -55,21 +44,21 @@ const SignPDF: React.FC = () => {
   );
   const [selectedId, selectShape] = useState<string | null>(null);
 
-  const stageRef = useRef<Konva.Stage>(null);
+  const stageRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const transformerRef = useRef<Konva.Transformer>(null);
+  const transformerRef = useRef<any>(null);
 
   useEffect(() => {
     const updatePdfDimensions = () => {
       if (containerRef.current) {
         const containerWidth = containerRef.current.clientWidth;
         const containerHeight = containerRef.current.clientHeight;
-        const scaleX = containerWidth / A4_WIDTH;
-        const scaleY = containerHeight / A4_HEIGHT;
-        const scale = Math.min(scaleX, scaleY, 1); // Cap scale at 1 to prevent enlargement
+        const scaleX = containerWidth / 595; // A4 width in points
+        const scaleY = containerHeight / 842; // A4 height in points
+        const scale = Math.min(scaleX, scaleY);
         setPdfDimensions({
-          width: A4_WIDTH * scale,
-          height: A4_HEIGHT * scale,
+          width: 595 * scale,
+          height: 842 * scale,
           scale: scale,
         });
       }
@@ -82,11 +71,11 @@ const SignPDF: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedId && transformerRef.current && stageRef.current) {
+    if (selectedId && transformerRef.current) {
       const node = stageRef.current.findOne(`#${selectedId}`);
       if (node) {
-        transformerRef.current.nodes([node as Konva.Node]);
-        transformerRef.current.getLayer()?.batchDraw();
+        transformerRef.current.nodes([node]);
+        transformerRef.current.getLayer().batchDraw();
       }
     }
   }, [selectedId]);
@@ -95,25 +84,21 @@ const SignPDF: React.FC = () => {
     setNumPages(numPages);
   };
 
-  const handleMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) => {
+  const handleMouseDown = (e: any) => {
     if (showSignatureModal) {
       setIsDrawing(true);
-      const pos = e.target.getStage()?.getPointerPosition();
-      if (pos) {
-        setSignature([...signature, { points: [pos.x, pos.y] }]);
-      }
+      const pos = e.target.getStage().getPointerPosition();
+      setSignature([...signature, { points: [pos.x, pos.y] }]);
     }
   };
 
-  const handleMouseMove = (e: Konva.KonvaEventObject<MouseEvent>) => {
+  const handleMouseMove = (e: any) => {
     if (showSignatureModal && isDrawing) {
       const stage = e.target.getStage();
-      const point = stage?.getPointerPosition();
-      if (point) {
-        const lastLine = signature[signature.length - 1];
-        lastLine.points = lastLine.points.concat([point.x, point.y]);
-        setSignature([...signature]);
-      }
+      const point = stage.getPointerPosition();
+      const lastLine = signature[signature.length - 1];
+      lastLine.points = lastLine.points.concat([point.x, point.y]);
+      setSignature([...signature]);
     }
   };
 
@@ -138,13 +123,13 @@ const SignPDF: React.FC = () => {
     Object.entries(signaturePositions).forEach(([page, position]) => {
       const pageNumber = parseInt(page);
       const signatureStage = new Konva.Stage({
-        container: document.createElement('div'),
+        container: document.createElement('div'), // Konva needs a container
         width: position.width,
         height: position.height,
       });
       const layer = new Konva.Layer();
       const image = new Konva.Image({
-        image: signatureImage as CanvasImageSource,
+        image: signatureImage as CanvasImageSource ,
         width: position.width,
         height: position.height,
       });
@@ -157,7 +142,7 @@ const SignPDF: React.FC = () => {
         JSON.stringify({
           image: dataUrl,
           x: position.x / pdfDimensions.scale,
-          y: (pdfDimensions.height - position.y - position.height) / pdfDimensions.scale,
+          y: (pdfDimensions.height - position.y - position.height) / pdfDimensions.scale, // Adjust Y coordinate
           width: position.width / pdfDimensions.scale,
           height: position.height / pdfDimensions.scale,
         })
@@ -165,14 +150,15 @@ const SignPDF: React.FC = () => {
     });
 
     try {
-      const response = await axios.post("/api/sign_pdf/", formData, {
+      const response = await authRequest.post("/pdf/sign_pdf/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        responseType: "blob",
       });
 
+      // Create a Blob from the PDF Stream
       const file = new Blob([response.data], { type: "application/pdf" });
+      // Create a link element, use it to download the blob, then remove it
       const fileURL = URL.createObjectURL(file);
       const fileLink = document.createElement("a");
       fileLink.href = fileURL;
