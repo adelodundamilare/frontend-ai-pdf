@@ -2,16 +2,20 @@ import React, { useState, useRef, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { FaCopy } from "react-icons/fa";
-import { AiOutlineArrowDown, AiOutlinePlus } from "react-icons/ai";
-import { ImCross } from "react-icons/im";
-import axios from "axios";
+import {  AiOutlinePlus } from "react-icons/ai";
+import { toast } from "react-toastify";
 import { Document, Page } from "react-pdf";
 import { pdfjs } from "react-pdf";
-import Konva from 'konva';
-import { Stage, Layer, Image as KonvaImage, Line, Transformer } from "react-konva";
+import Konva from "konva";
+import {
+  Stage,
+  Layer,
+  Image as KonvaImage,
+  Line,
+  Transformer,
+} from "react-konva";
 
 import { authRequest } from "../../../../../config/baseUrl";
-import Left from "../../../LeftSide/Left";
 import BackIcon from "../../../../../assets/back.svg";
 import DeviceIcon from "../../../../../assets/device.svg";
 import DropBoxIcon from "../../../../../assets/dropbox.svg";
@@ -22,16 +26,20 @@ const SignPDF: React.FC = () => {
   const location = useLocation();
   const nav = useNavigate();
   const [showSideBar, setshowSideBar] = useState(false);
-  const [showLeftSideBar, setshowLeftSideBar] = useState(false);
   const file = location.state.pdf[0];
   const [numPages, setNumPages] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [signature, setSignature] = useState<any[]>([]);
   const [isDrawing, setIsDrawing] = useState(false);
   const [signaturePositions, setSignaturePositions] = useState<{
-    [key: number]: { x: number; y: number; width: number; height: number; id: string };
+    [key: number]: {
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      id: string;
+    };
   }>({});
-  const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [showSignatureModal, setShowSignatureModal] = useState(false);
   const [pdfDimensions, setPdfDimensions] = useState({
@@ -109,12 +117,11 @@ const SignPDF: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!file || Object.keys(signaturePositions).length === 0) {
-      setMessage("Please select a file and place signatures on all pages");
+      toast.error("Please select a file and place signatures on all pages");
       return;
     }
 
     setLoading(true);
-    setMessage("");
 
     const formData = new FormData();
     formData.append("pdf_file", file);
@@ -123,13 +130,13 @@ const SignPDF: React.FC = () => {
     Object.entries(signaturePositions).forEach(([page, position]) => {
       const pageNumber = parseInt(page);
       const signatureStage = new Konva.Stage({
-        container: document.createElement('div'), // Konva needs a container
+        container: document.createElement("div"), // Konva needs a container
         width: position.width,
         height: position.height,
       });
       const layer = new Konva.Layer();
       const image = new Konva.Image({
-        image: signatureImage as CanvasImageSource ,
+        image: signatureImage as CanvasImageSource,
         width: position.width,
         height: position.height,
       });
@@ -142,7 +149,9 @@ const SignPDF: React.FC = () => {
         JSON.stringify({
           image: dataUrl,
           x: position.x / pdfDimensions.scale,
-          y: (pdfDimensions.height - position.y - position.height) / pdfDimensions.scale, // Adjust Y coordinate
+          y:
+            (pdfDimensions.height - position.y - position.height) /
+            pdfDimensions.scale, // Adjust Y coordinate
           width: position.width / pdfDimensions.scale,
           height: position.height / pdfDimensions.scale,
         })
@@ -167,10 +176,13 @@ const SignPDF: React.FC = () => {
       fileLink.click();
       document.body.removeChild(fileLink);
 
-      setMessage("PDF signed and downloaded successfully");
-    } catch (error) {
+      toast.success("PDF signed and downloaded successfully");
+    } catch (error: any) {
       console.error("Error signing PDF:", error);
-      setMessage("An error occurred while signing the PDF");
+      toast.error(
+        error?.response?.data?.error ||
+          "An error occurred while signing the PDF"
+      );
     } finally {
       setLoading(false);
     }
@@ -192,7 +204,7 @@ const SignPDF: React.FC = () => {
             y: 50,
             width: img.width * 0.5,
             height: img.height * 0.5,
-            id: newId
+            id: newId,
           },
         }));
         selectShape(newId);
@@ -374,7 +386,7 @@ const SignPDF: React.FC = () => {
                 onClick={deleteSignature}
                 className="bg-red-500 text-white px-4 py-2 rounded-md"
               >
-                Delete Signature
+                Delete
               </button>
             )}
           </div>
@@ -415,20 +427,14 @@ const SignPDF: React.FC = () => {
                 Clear
               </button>
               <button
-                onClick={handleSubmit}
+                onClick={finishSignature}
                 className="bg-[#20808D] text-white px-4 py-2 rounded-md"
                 disabled={loading}
               >
-                {loading ? "Saving..." : "Save"}
+                Save
               </button>
             </div>
           </div>
-        </div>
-      )}
-
-      {message && (
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 p-4 bg-green-100 rounded-md">
-          <p className="text-green-700">{message}</p>
         </div>
       )}
     </div>
