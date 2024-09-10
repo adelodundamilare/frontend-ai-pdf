@@ -1,25 +1,22 @@
 import React, { useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import Left from "../../../LeftSide/Left";
-import BackIcon from "../../../../../assets/back.svg";
+import { AiOutlinePlus } from "react-icons/ai";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { FaCopy } from "react-icons/fa";
-import DeviceIcon from "../../../../../assets/device.svg";
-import DropBoxIcon from "../../../../../assets/dropbox.svg";
-import { AiOutlinePlus } from "react-icons/ai";
 import { ImCross } from "react-icons/im";
 import { FaArrowLeftLong, FaTrash } from "react-icons/fa6";
+import { Document, Page } from "react-pdf";
+import { toast } from "react-toastify";
+import Left from "../../../LeftSide/Left";
+import BackIcon from "../../../../../assets/back.svg";
+import DeviceIcon from "../../../../../assets/device.svg";
+import DropBoxIcon from "../../../../../assets/dropbox.svg";
 import StampIcon from "../../../../../assets/stamp.svg";
 import PTOIcon from "../../../../../assets/pto.svg";
 import OTPIcon from "../../../../../assets/otp.svg";
 import OCRIcon from "../../../../../assets/ocr.svg";
 import ProtectIcon from "../../../../../assets/protect.svg";
-import { Document, Page } from "react-pdf";
-import { pdfjs } from "react-pdf";
-import { extractFilenameFromUrl } from "../../../../../constants/helpers";
-import { toast } from "react-toastify";
 import { authRequest } from "../../../../../config/baseUrl";
-import Progress from "../../../../Progress";
 import ProgressModal from "../../../../Progress";
 import MergedPdfMessage from "./DownloadPDF/MergedPdfMessage";
 import "./new_pdf.css";
@@ -35,14 +32,9 @@ const MergePdfContent = () => {
   const [isButtonClicked, setIsButtonClicked] = useState(false);
   const [mergedFileUrl, setMergedFileUrl] = useState(null);
   const [mergeID, setMergeId] = useState(null);
-  const pdfFile = location.state.pdf[0];
-
-  console.log(isButtonClicked, "isButtonClicked", mergedFileUrl);
 
   const [selectedFiles, setSelectedFiles] = useState([]);
   const fileInputRef = useRef(null);
-
-  console.log(selectedFiles, "selected_files");
 
   const handleFileInputChange = (e) => {
     const files = e.target.files;
@@ -77,17 +69,10 @@ const MergePdfContent = () => {
       setMergedFileUrl(newMergedFileUrl);
       const newMergeId = response.data.split_pdf.id;
       setMergeId(newMergeId);
-      console.log(newMergedFileUrl, "url");
-      // const link = document.createElement("a");
-      // link.href = mergedFileUrl;
-      // link.setAttribute("download", extractFilenameFromUrl(mergedFileUrl));
-      // document.body.appendChild(link);
-      // link.click();
-      // document.body.removeChild(link);
       setIsLoading(false);
     } catch (error) {
-      toast.error(error);
       setIsLoading(false);
+      toast.error(error?.message);
       console.error("Error merging files:", error);
     }
   };
@@ -96,7 +81,7 @@ const MergePdfContent = () => {
 
   return (
     <>
-      {isButtonClicked ? (
+      {isButtonClicked && mergedFileUrl ? (
         <MergedPdfMessage
           mergedFileUrl={mergedFileUrl}
           mergeID={mergeID}

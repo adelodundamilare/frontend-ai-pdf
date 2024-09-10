@@ -8,7 +8,7 @@ import OTPIcon from "../../../../../../assets/otp.svg";
 import OCRIcon from "../../../../../../assets/ocr.svg";
 import ProtectIcon from "../../../../../../assets/protect.svg";
 import { authRequest } from "../../../../../../config/baseUrl";
-import { downloadCompressPdf } from "@/constants/helpers";
+import { downloadPdf } from "@/constants/helpers";
 
 interface Props {
   fileUrl: string;
@@ -58,7 +58,7 @@ const Message = ({ fileUrl, title, mergeID, onClose }: Props) => {
           </button>
           <button
             className="bg-[#20808D] text-white p-2 rounded-md w-[13rem]"
-            onClick={() => downloadCompressPdf(fileUrl)}
+            onClick={() => downloadPdf(fileUrl)}
           >
             Download to device
           </button>

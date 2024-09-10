@@ -1,20 +1,16 @@
 import React from "react";
 import { FaArrowLeftLong, FaTrash } from "react-icons/fa6";
+import { toast } from "react-toastify";
+
 import StampIcon from "../../../../../../assets/stamp.svg";
 import PTOIcon from "../../../../../../assets/pto.svg";
 import OTPIcon from "../../../../../../assets/otp.svg";
 import OCRIcon from "../../../../../../assets/ocr.svg";
 import ProtectIcon from "../../../../../../assets/protect.svg";
-import { toast } from "react-toastify";
 import { authRequest } from "../../../../../../config/baseUrl";
-import { downloadCompressPdf } from "@/constants/helpers";
+import { downloadPdf } from "@/constants/helpers";
 
 const StampPdfMessage = ({ fileUrl, mergeID, onClose }: any) => {
-  const extractFilenameFromUrl = (url: string) => {
-    const urlObject = new URL(url);
-    return urlObject.pathname.split("/").pop();
-  };
-
   const backPdf = async () => {
     onClose();
   };
@@ -52,7 +48,7 @@ const StampPdfMessage = ({ fileUrl, mergeID, onClose }: any) => {
           </div>
           <button
             className="bg-[#20808D] text-white p-2 rounded-md w-[13rem]"
-            onClick={() => downloadCompressPdf(fileUrl)}
+            onClick={() => downloadPdf(fileUrl)}
           >
             Download to device
           </button>

@@ -126,3 +126,9 @@ export interface IPrice {
   id: string;
   amount: number;
 }
+
+export interface IPdfItem {
+  id: string;
+  pageNumber: number;
+  content: string;
+}

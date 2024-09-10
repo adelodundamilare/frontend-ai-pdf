@@ -1,15 +1,28 @@
-import Main from "@/components/static/RightSide/Pdf/Main";
-import DashboardLayout from "@/layouts/dashboard-layout";
+import DashboardPdfLayout from "@/layouts/dashboard-pdf-layout";
+import DragNDrop from "@/components/drag-n-drop";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const SignPdfScreen = () => {
+  const nav = useNavigate();
+
+  const handleClick = async (event: any) => {
+    const selectedFiles: any[] = event.target.files;
+
+    if (selectedFiles.length < 1) {
+      toast.warn("Please select a pdf files.");
+    } else {
+      nav("/pdf/sign/content", { state: { pdf: selectedFiles } });
+    }
+  };
+
   return (
-    <DashboardLayout>
-      <Main
-        title={"Sign Pdf"}
-        link={"/pdf/sign/content"}
-        description={"Sign or request electronic signatures from others."}
-      />
-    </DashboardLayout>
+    <DashboardPdfLayout
+    title={"Sign PDF"}
+    description="Sign or request electronic signatures from others."
+  >
+    <DragNDrop handleClick={handleClick} multiple={true} />
+  </DashboardPdfLayout>
   );
 };
 

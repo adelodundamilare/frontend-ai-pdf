@@ -13,9 +13,8 @@ export const convertCentsToDollars = (cents: number) => {
   return (cents / 100).toFixed(2); // Convert cents to dollars with two decimal places
 };
 
-export const downloadCompressPdf = async (compressedFileUrl: string) => {
+export const downloadPdf = async (compressedFileUrl: string) => {
   try {
-    console.log({ compressedFileUrl });
     const response = await fetch(compressedFileUrl);
     const blob = await response.blob();
 

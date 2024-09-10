@@ -7,7 +7,7 @@ import OCRIcon from "../../../../../../assets/ocr.svg";
 import ProtectIcon from "../../../../../../assets/protect.svg";
 import { toast } from "react-toastify";
 import { authRequest } from "../../../../../../config/baseUrl";
-import { downloadCompressPdf } from "@/constants/helpers";
+import { downloadPdf } from "@/constants/helpers";
 
 const CompressPdfMessage = ({ compressedFileUrl, mergeID, onClose }: any) => {
   const extractFilenameFromUrl = (url: string) => {
@@ -52,7 +52,7 @@ const CompressPdfMessage = ({ compressedFileUrl, mergeID, onClose }: any) => {
           </div>
           <button
             className="bg-[#20808D] text-white p-2 rounded-md w-[13rem]"
-            onClick={() => downloadCompressPdf(compressedFileUrl)}
+            onClick={() => downloadPdf(compressedFileUrl)}
           >
             Download to device
           </button>

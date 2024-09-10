@@ -8,19 +8,14 @@ import OCRIcon from "../../../../../../assets/ocr.svg";
 import ProtectIcon from "../../../../../../assets/protect.svg";
 import { toast } from "react-toastify";
 import { authRequest } from "../../../../../../config/baseUrl";
+import { downloadPdf } from "@/constants/helpers";
 
 const MergedPdfMessage = ({ mergedFileUrl, mergeID, onClose }: any) => {
-  const extractFilenameFromUrl = (url: string) => {
-    const urlObject = new URL(url);
-    return urlObject.pathname.split("/").pop();
-  };
-
   const backPdf = async () => {
     onClose();
   };
 
   const DeleteMergePdf = async () => {
-    console.log("Test", mergeID);
     try {
       console.log(mergeID, "ok");
       const response: any = await authRequest.delete(
@@ -38,22 +33,8 @@ const MergedPdfMessage = ({ mergedFileUrl, mergeID, onClose }: any) => {
     }
   };
 
-  function downloadMergedPdf(mergedFileUrl: any): void {
-    throw new Error("Function not implemented.");
-  }
-
   return (
     <div className="flex justify-center items-center h-screen">
-      {/* <div className="text-center">
-      <p className="text-2xl text-[#303030] mb-4">PDFs have been merged!</p>
-      <button
-        className="bg-[#20808D] text-white p-5 rounded-lg w-[20rem]"
-        onClick={()=>downloadMergedPdf(mergedFileUrl)}
-      >
-        Download merged PDF
-      </button>
-    </div> */}
-
       <div className=" flex justify-center items-center flex-col font-roboto mt-10">
         <h1 className="text-[#303030] text-lg mb-3 text-center">
           PDFs have been merged!
@@ -68,7 +49,7 @@ const MergedPdfMessage = ({ mergedFileUrl, mergeID, onClose }: any) => {
           </div>
           <button
             className="bg-[#20808D] text-white p-2 rounded-md w-[13rem]"
-            onClick={() => downloadMergedPdf(mergedFileUrl)}
+            onClick={() => downloadPdf(mergedFileUrl)}
           >
             Download to device
           </button>
