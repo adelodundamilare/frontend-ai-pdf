@@ -43,7 +43,7 @@ const NoteSummarizer = () => {
 
       {/* MAIN CHAT SECTION  */}
 
-      <div className="grid grid-cols-2 sm:grid-gap-1 gap-2 my-4">
+      <div className="grid lg:grid-cols-2 grid-cols-1 gap-2 my-4">
         {/* Div For Input  */}
         <div>
           <h5 className="mb-2">Your notes</h5>

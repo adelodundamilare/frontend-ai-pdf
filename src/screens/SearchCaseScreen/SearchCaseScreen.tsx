@@ -7,8 +7,6 @@ import { ICaseResponse } from "@/lib/types";
 const SearchCaseScreen = () => {
   const [searchResults, setSearchResults] = useState<ICaseResponse>();
 
-  console.log({ searchResults });
-
   return (
     <DashboardLayout>
       <div className="max-w-4xl mx-auto">
