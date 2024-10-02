@@ -3,6 +3,7 @@ import { useChat, Message } from "ai/react";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 //
+import { AvatarImage } from "@/components/AvatarUpload";
 import SendIcon from "@/assets/send.svg";
 import ProfileImage from "@/assets/profile.png";
 import LikeIcon from "@/assets/like.svg";
@@ -11,6 +12,7 @@ import EditIcon from "@/assets/edit.svg";
 import CopyIcon from "@/assets/copy.svg";
 import QuestionIcon from "@/assets/question.png";
 import { authRequest } from "@/config/baseUrl";
+import { IProfile } from "@/lib/types";
 
 interface IMessage {
   role: string;
@@ -122,11 +124,11 @@ const Chat = () => {
               placeholder="[ Write a note ]"
               value={loading ? "Loading, please wait..." : input}
               onChange={handleInputChange}
-              className="w-[100%]  h-fit min-w-fit relative resize-none pt-[1rem] pb-[1rem] pl-[2rem] pr-[5rem] text-lg tracking-wider  plaholder:text-[#303030] outline-none rounded-[1rem] shadow-ChatBoxShadown"
-              onInput={(e: any) => {
-                e.target.style.height = "auto";
-                e.target.style.height = e.target.scrollHeight + "px";
-              }}
+              className="w-[100%]  h-fit min-w-fit !max-h-[8rem] relative resize-none pt-[1rem] pb-[1rem] pl-[2rem] pr-[5rem] text-lg tracking-wider  plaholder:text-[#303030] outline-none rounded-[1rem] shadow-ChatBoxShadown"
+              // onInput={(e: any) => {
+              //   e.target.style.height = "auto";
+              //   e.target.style.height = e.target.scrollHeight + "px";
+              // }}
             />
             <button type="submit">
               <img
@@ -153,9 +155,19 @@ const Chat = () => {
 export default Chat;
 
 const UserRes = ({ message }: IChatResponse) => {
+  let user: IProfile | undefined;
+
+  try {
+    if (!localStorage.getItem("lawtabby_user")) return;
+    user = JSON.parse(localStorage.getItem("lawtabby_user") ?? "");
+  } catch (err) {}
+
   return (
     <div className="flex gap-3 items-start mt-4 p-3">
-      <img src={ProfileImage} alt="" className="w-[2rem] h-[2rem]" />
+      <AvatarImage
+        imageUrl={user?.avatar ?? ""}
+        className="!w-[2rem] !h-[2rem]"
+      />
       <p className="w-[90%] text-medium text-[#303030] h-fit overflow-y-auto max-h-[10rem] leading-6">
         {message}
       </p>
