@@ -13,7 +13,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({ results }) => {
     </div>;
   }
   return (
-    <div className="mt-4">
+    <div className="mt-4  gap-2 grid">
       {results &&
         results.map((result, index) => (
           <div key={index}>

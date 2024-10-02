@@ -152,12 +152,15 @@ const Routers = () => {
           <Route
             path="/search-case"
             element={
-                <SearchCaseScreen />
+              <SearchCaseScreen />
               // <PremiumRoute>
               // </PremiumRoute>
             }
           />
-          <Route path="/search-case/:id" element={<SearchCaseSingleScreen />} />
+          <Route
+            path="/search-case/single"
+            element={<SearchCaseSingleScreen />}
+          />
         </Route>
         <Route path="*" element={<NotFoundScreen />} />
       </Routes>

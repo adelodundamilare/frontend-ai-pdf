@@ -1,43 +1,18 @@
+import { useLocation } from "react-router-dom";
+//
 import DashboardLayout from "@/layouts/dashboard-layout";
 import ArrowIcon from "@/assets/carrow2.svg";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import ProgressModal from "@/components/Progress";
 import { ICaseData } from "@/lib/types";
 
+interface LocationState {
+  data: ICaseData;
+}
+
 const SearchCaseSingleScreen = () => {
-  const { id } = useParams();
-  const [isLoading, setIsLoading] = useState(false);
-  const [singleCase, setSingleCase] = useState<ICaseData | undefined>();
+  const location = useLocation();
+  const { data } = (location.state as LocationState) || {};
 
-  useEffect(() => {
-    const fetchCase = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch(
-          `https://api.case.law/v1/cases/${id}/?full_case=true`,
-          {
-            headers: {
-              Authorization: `Token ${import.meta.env.VITE_CASELAW_API_KEY}`,
-            },
-          }
-        );
-        const data = await response.json();
-        setSingleCase(data);
-      } catch (error) {
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchCase();
-  }, []);
-
-  if (isLoading) {
-    return <ProgressModal isLoading={isLoading} />;
-  }
-
-  if (!singleCase) {
+  if (!data) {
     return (
       <div className="relative h-screen flex  justify-center items-center">
         <div>Invalid case id</div>
@@ -51,7 +26,7 @@ const SearchCaseSingleScreen = () => {
         <div className="flex-1 font-roboto h-screen overflow-y-auto pt-3 pb-5">
           <div className="flex justify-center w-[100%] items-center">
             <h1 className="text-center w-[100%] text-2xl">
-              {singleCase?.name ?? ""}
+              {data?.caseNameFull ?? ""}
             </h1>
           </div>
 
@@ -71,22 +46,14 @@ const SearchCaseSingleScreen = () => {
                   <div className="w-[100%] h-[1px] bg-[#D9D9D9] mt-2"></div>
                 </div>
                 <div className=" gap-x-4"></div>
-                {/* PROFILE INFO  */}
                 <div className="w-[100%] bg-[#F5F5F5] p-3 mt-3 rounded-md ">
-                  <LineItem
-                    title="Decision Date"
-                    value={singleCase.decision_date}
-                  />
-                  <LineItem
-                    title="Docket Number"
-                    value={singleCase.docket_number}
-                  />
+                  <LineItem title="Date Argued" value={data.dateArgued} />
+                  <LineItem title="Docket Number" value={data.docketNumber} />
+                  <LineItem title="Court" value={data.court} />
                 </div>
               </div>
 
-              {/* SITE INFO  */}
-              <div className="mt-4">
-                {/* ACCOUNT HEADING AND LINE  */}
+              {/* <div className="mt-4">
                 <h1 className="text-2xl">Volume</h1>
                 <div className="w-[100%] bg-[#F5F5F5] p-3 mt-3 rounded-md ">
                   <LineItem
@@ -97,7 +64,6 @@ const SearchCaseSingleScreen = () => {
                   <LineItem title="Url" value={singleCase.volume.url} />
                 </div>
                 <div className="mt-4">
-                  {/* ACCOUNT HEADING AND LINE  */}
                   <h1 className="text-2xl">Reporter</h1>
                   <div className="w-[100%] bg-[#F5F5F5] p-3 mt-3 rounded-md ">
                     <LineItem
@@ -122,7 +88,7 @@ const SearchCaseSingleScreen = () => {
                     </a>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

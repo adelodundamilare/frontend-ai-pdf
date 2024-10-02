@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
+import { authRequest } from "@/config/baseUrl";
+import { ICaseResponse } from "@/lib/types";
 
 interface Props {
-  callback: (searchQuery: any[]) => void;
+  callback: (searchQuery: ICaseResponse) => void;
 }
 
 const SearchForm = ({ callback }: Props) => {
@@ -12,24 +14,24 @@ const SearchForm = ({ callback }: Props) => {
   const [jurisdictions, setJurisdictions] = useState([]);
 
   // replace with react query...
-  useEffect(() => {
-    const fetchFilters = async () => {
-      const [courtsRes, jurisdictionsRes] = await Promise.all([
-        fetch(`https://api.case.law/v1/courts/?full_case=true`),
-        fetch(`https://api.case.law/v1/jurisdictions/?full_case=true`),
-      ]);
+  // useEffect(() => {
+  //   const fetchFilters = async () => {
+  //     const [courtsRes, jurisdictionsRes] = await Promise.all([
+  //       fetch(`https://api.case.law/v1/courts/?full_case=true`),
+  //       fetch(`https://api.case.law/v1/jurisdictions/?full_case=true`),
+  //     ]);
 
-      courtsRes.json().then((data) => {
-        setCourts(data.results);
-      });
+  //     courtsRes.json().then((data) => {
+  //       setCourts(data.results);
+  //     });
 
-      jurisdictionsRes.json().then((data) => {
-        setJurisdictions(data.results);
-      });
-    };
+  //     jurisdictionsRes.json().then((data) => {
+  //       setJurisdictions(data.results);
+  //     });
+  //   };
 
-    fetchFilters();
-  }, []);
+  //   fetchFilters();
+  // }, []);
 
   const debounced = useDebouncedCallback((value) => {
     handleSubmit(value);
@@ -38,16 +40,8 @@ const SearchForm = ({ callback }: Props) => {
   const handleSubmit = async (value: string) => {
     try {
       setIsLoading(true);
-      const response = await fetch(
-        `https://api.case.law/v1/cases/?search=${value}`,
-        {
-          headers: {
-            Authorization: `Token ${import.meta.env.VITE_CASELAW_API_KEY}`,
-          },
-        }
-      );
-      const data = await response.json();
-      callback(data.results);
+      const response = await authRequest.get(`/case/search/?q=${value}`);
+      callback(response?.data?.data);
     } catch (error) {
       console.error("Error fetching search results:", error);
     } finally {
