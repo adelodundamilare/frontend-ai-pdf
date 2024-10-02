@@ -1,6 +1,6 @@
 import { ICaseData } from "@/lib/types";
 import React from "react";
-import { BiLinkExternal } from "react-icons/bi";
+import { BiChevronRight } from "react-icons/bi";
 import { Link } from "react-router-dom";
 
 interface CaseCardProps {
@@ -20,9 +20,9 @@ const CaseCard: React.FC<CaseCardProps> = ({ caseData }) => {
         </div>
         <Link to="/search-case/single" state={{ data: caseData }}>
           <span
-            className={`px-2 py-1 text-xs flex gap-2 font-semibold rounded-full bg-green-100 text-green-800`}
+            className={`px-2 py-1 text-xs flex gap-1 font-semibold rounded-full bg-green-100 text-green-800`}
           >
-            {caseData.status} <BiLinkExternal />
+            view <BiChevronRight />
           </span>
         </Link>
       </div>
