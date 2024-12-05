@@ -56,7 +56,7 @@ const SearchCaseSingleScreen = () => {
               <span className="font-semibold">Court:</span> {data.court}
             </p>
             <p>
-              <span className="font-semibold">Judge:</span> {data.judge}
+              <span className="font-semibold">Attorney:</span> {data.attorney}
             </p>
             {/* <p><span className="font-semibold">Next Hearing:</span> {data.nextHearing}</p> */}
           </div>
@@ -77,8 +77,20 @@ const SearchCaseSingleScreen = () => {
       </section> */}
 
         <section className="space-y-4">
-          <h2 className="text-2xl font-semibold">Case Description</h2>
-          <p className="text-gray-700">{data.caseNameFull}</p>
+          <h2 className="text-2xl font-semibold">Case Snippet</h2>
+          <p className="text-gray-700">
+            {data?.opinions?.map((x) => (
+              <div className="py-1">
+                {x.snippet}
+                {x.download_url && ` - `}
+                {x.download_url && (
+                  <a className="text-primary underline" href={x.download_url}>
+                    Download full case
+                  </a>
+                )}
+              </div>
+            ))}
+          </p>
         </section>
 
         {/* <section className="space-y-4">

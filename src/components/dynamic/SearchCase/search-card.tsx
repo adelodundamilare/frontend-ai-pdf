@@ -12,7 +12,9 @@ const CaseCard: React.FC<CaseCardProps> = ({ caseData }) => {
     <div className="bg-white shadow rounded-lg p-4">
       <div className="flex justify-between items-center">
         <div className="space-y-1">
-          <h3 className="text-lg font-semibold">{caseData.caseName}</h3>
+          <h3 className="text-lg font-semibold">
+            {caseData?.caseNameFull ?? caseData?.caseName}
+          </h3>
           <p className="text-sm text-gray-600">Court: {caseData.court}</p>
           <p className="text-sm text-gray-600">
             Date Argued: {caseData.dateArgued}

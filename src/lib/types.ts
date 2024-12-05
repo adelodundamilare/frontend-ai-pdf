@@ -14,6 +14,7 @@ export interface ICaseData {
   court: string;
   court_citation_string: string;
   court_id: string;
+  opinions: ICaseOpinion[];
   dateArgued: string;
   dateFiled: string;
   dateReargued: string;
@@ -24,6 +25,16 @@ export interface ICaseData {
   lexisCite: string;
   neutralCite: string;
   status: string;
+}
+
+export interface ICaseOpinion {
+  author_id: any;
+  cities: string[];
+  download_url: string;
+  id: number;
+  meta: { timestamp: string; date_created: string };
+  snippet: string;
+  type: string;
 }
 
 export interface IProfile {
