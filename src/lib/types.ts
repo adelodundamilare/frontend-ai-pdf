@@ -90,3 +90,13 @@ export interface IPdfItem {
   pageNumber: number;
   content: string;
 }
+
+export interface IOpinion {
+  id: number;
+  resource_url: string;
+  xml_harvard: any;
+  plain_text: any;
+  html: any;
+  html_lawbox: any;
+  html_with_citations: any;
+}

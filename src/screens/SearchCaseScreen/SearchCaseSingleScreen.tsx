@@ -1,9 +1,13 @@
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
+import { FaGavel, FaCalendar, FaClock } from "react-icons/fa";
 //
 import DashboardBasicLayout from "@/layouts/dashboard-basic-layout";
-import { FaGavel, FaCalendar, FaClock, FaFile } from "react-icons/fa";
+import SubscriptionPopup from "@/components/dynamic/Popup/SubscriptionPopup";
+import { authRequest } from "@/config/baseUrl";
 
-import { ICaseData } from "@/lib/types";
+import { ICaseData, IOpinion } from "@/lib/types";
+import OpinionSingle from "@/components/dynamic/Popup/Opinion";
 
 interface LocationState {
   data: ICaseData;
@@ -11,12 +15,14 @@ interface LocationState {
 
 const SearchCaseSingleScreen = () => {
   const location = useLocation();
+  const [opinionId, setOpinionId] = useState<number | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(false);
   const { data } = (location.state as LocationState) || {};
 
   if (!data) {
     return (
       <div className="relative h-screen flex  justify-center items-center">
-        <div>Invalid case id</div>
+        <div>Invalid Case Data</div>
       </div>
     );
   }
@@ -79,15 +85,17 @@ const SearchCaseSingleScreen = () => {
         <section className="space-y-4">
           <h2 className="text-2xl font-semibold">Case Snippet</h2>
           <p className="text-gray-700">
-            {data?.opinions?.map((x) => (
-              <div className="py-1">
+            {data?.opinions?.map((x, index) => (
+              <div key={index} className="py-1">
                 {x.snippet}
                 {x.download_url && ` - `}
-                {x.download_url && (
-                  <a className="text-primary underline" href={x.download_url}>
-                    Download full case
-                  </a>
-                )}
+                <button
+                  onClick={() => setOpinionId(x.id)}
+                  className="text-primary ml-1 underline"
+                >
+                  {" "}
+                  Read Full Opinion
+                </button>
               </div>
             ))}
           </p>
@@ -107,6 +115,19 @@ const SearchCaseSingleScreen = () => {
           ))}
         </ul>
       </section> */}
+
+        {opinionId !== undefined && (
+          <div className=" absolute top-0 left-0 w-full h-full bg-black bg-opacity-50">
+            <div className=" w-full h-full flex justify-center items-center opacity-100">
+              <div className=" mt-auto mb-auto flex justify-center items-center opacity-100">
+                <OpinionSingle
+                  onClose={() => setOpinionId(undefined)}
+                  opinionId={opinionId}
+                />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </DashboardBasicLayout>
   );
